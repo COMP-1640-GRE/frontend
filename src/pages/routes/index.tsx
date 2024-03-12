@@ -4,18 +4,18 @@ import {
   BlogPostEdit,
   BlogPostList,
   BlogPostShow,
-} from "../blog-posts";
+} from "../faculties";
 import {
   CategoryCreate,
   CategoryEdit,
   CategoryList,
   CategoryShow,
-} from "../categories";
+} from "../periods";
 import { Login } from "../login";
 
 export const authRoutes: RouteProps[] = [
   {
-    path: "/blog-posts",
+    path: "/faculties",
     children: [
       <Route index element={<BlogPostList />} />,
       <Route path="create" element={<BlogPostCreate />} />,
@@ -24,7 +24,7 @@ export const authRoutes: RouteProps[] = [
     ],
   },
   {
-    path: "/categories",
+    path: "/periods",
     children: [
       <Route index element={<CategoryList />} />,
       <Route path="create" element={<CategoryCreate />} />,

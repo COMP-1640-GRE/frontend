@@ -1,10 +1,7 @@
-import { Refine } from "@refinedev/core";
+import { ErrorComponent, useNotificationProvider } from "@refinedev/antd";
+import { I18nProvider, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-
-import { ErrorComponent, useNotificationProvider } from "@refinedev/antd";
-import "@refinedev/antd/dist/reset.css";
-
 import nestjsxCrudDataProvider from "@refinedev/nestjsx-crud";
 import routerBindings, {
   DocumentTitleHandler,
@@ -13,28 +10,25 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import { App as AntdApp } from "antd";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { authProvider } from "./authProvider";
+import { authProvider } from "./services/authProvider";
 import { ColorModeContextProvider } from "./contexts/color-mode";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
-import { nonAuthRoutes } from "./pages/routes";
+import { authRoutes, nonAuthRoutes } from "./pages/routes";
 import { AuthElement, NonAuthElement } from "./pages/routes/element";
 import { resources } from "./refineResources";
 
-function App() {
-  const API_URL = "https://api.nestjsx-crud.refine.dev";
-  const dataProvider = nestjsxCrudDataProvider(API_URL);
+import "@refinedev/antd/dist/reset.css";
+import { useTranslation } from "react-i18next";
+import api, { baseURL } from "./services/apis";
 
+function App() {
+  const dataProvider = nestjsxCrudDataProvider(baseURL, api);
+  const { t, i18n } = useTranslation();
+  const i18nProvider: I18nProvider = {
+    translate: (key: string, options?: any, defaultValue?: string) =>
+      (t(key, options) as any) || defaultValue || key,
+    changeLocale: (lang: string) => i18n.changeLanguage(lang),
+    getLocale: () => i18n.language,
+  };
   return (
     <BrowserRouter>
       <RefineKbarProvider>
@@ -47,6 +41,7 @@ function App() {
                 authProvider={authProvider}
                 routerProvider={routerBindings}
                 resources={resources}
+                i18nProvider={i18nProvider}
                 options={{
                   syncWithLocation: true,
                   warnWhenUnsavedChanges: true,
@@ -61,18 +56,9 @@ function App() {
                       // TODO: navigate to resource based on user role
                       element={<NavigateToResource resource="blog_posts" />}
                     />
-                    <Route path="/blog-posts">
-                      <Route index element={<BlogPostList />} />
-                      <Route path="create" element={<BlogPostCreate />} />
-                      <Route path="edit/:id" element={<BlogPostEdit />} />
-                      <Route path="show/:id" element={<BlogPostShow />} />
-                    </Route>
-                    <Route path="/categories">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
-                    </Route>
+                    {authRoutes.map((route) => (
+                      <Route key={route.path} {...route} />
+                    ))}
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>
                   <Route element={NonAuthElement}>
