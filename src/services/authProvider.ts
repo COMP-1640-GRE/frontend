@@ -2,6 +2,8 @@ import { AuthBindings } from "@refinedev/core";
 import api from "./apis";
 import { LocalStorageKey } from "../enums/local-storage.enum";
 import { AxiosError } from "axios";
+import Cookies from "js-cookie";
+import { CookiesKey } from "../enums/cookies.enum";
 
 export const TOKEN_KEY = "refine-auth";
 
@@ -10,19 +12,22 @@ export const authProvider: AuthBindings = {
     if (username && password) {
       let redirectTo = "/";
       const res = await api
-        .post("/auth/login", { username, password })
+        .post("/auth/login", { username, password, remember })
         .catch(({ response }: AxiosError) => {
           if (response?.status === 428) {
             localStorage.setItem(
               LocalStorageKey.USER,
               JSON.stringify(response.data)
             );
-            redirectTo = "/activate";
+            redirectTo = "/activate-account";
           }
         });
 
       if (res) {
         localStorage.setItem(LocalStorageKey.USER, JSON.stringify(res.data));
+      }
+      if (remember) {
+        localStorage.setItem(LocalStorageKey.REMEMBER, "true");
       }
 
       return {
@@ -49,7 +54,9 @@ export const authProvider: AuthBindings = {
     };
   },
   check: async () => {
-    const token = localStorage.getItem(LocalStorageKey.USER);
+    const token = Cookies.get(CookiesKey.TOKEN);
+    console.log(token);
+
     if (token) {
       return {
         authenticated: true,

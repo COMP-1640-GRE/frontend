@@ -25,14 +25,6 @@ import {
 import { useLogin, useTranslate, useRouterContext } from "@refinedev/core";
 import { ThemedTitleV2 } from "@refinedev/antd";
 
-// import {
-//   bodyStyles,
-//   containerStyles,
-//   headStyles,
-//   layoutStyles,
-//   titleStyles,
-// } from "../styles";
-
 type LoginProps = LoginPageProps<LayoutProps, CardProps, FormProps>;
 /**
  * **refine** has a default login page form which is served on `/login` route when the `authProvider` configuration is provided.
@@ -41,7 +33,6 @@ type LoginProps = LoginPageProps<LayoutProps, CardProps, FormProps>;
  */
 export const Login: React.FC<LoginProps> = ({
   providers,
-  registerLink,
   forgotPasswordLink,
   rememberMe,
   contentProps,
@@ -154,9 +145,7 @@ export const Login: React.FC<LoginProps> = ({
           form={form}
           onFinish={(values) => login(values)}
           requiredMark={false}
-          initialValues={{
-            remember: false,
-          }}
+          initialValues={{ remember: false }}
           {...formProps}
         >
           <Form.Item
@@ -229,30 +218,6 @@ export const Login: React.FC<LoginProps> = ({
             </Form.Item>
           )}
         </Form>
-      )}
-
-      {registerLink ?? (
-        <div
-          style={{
-            marginTop: hideForm ? 16 : 8,
-          }}
-        >
-          <Typography.Text style={{ fontSize: 12 }}>
-            {translate(
-              "pages.login.buttons.noAccount",
-              "Don’t have an account?"
-            )}{" "}
-            <ActiveLink
-              to="/register"
-              style={{
-                fontWeight: "bold",
-                color: token.colorPrimaryTextHover,
-              }}
-            >
-              {translate("pages.login.signup", "Sign up")}
-            </ActiveLink>
-          </Typography.Text>
-        </div>
       )}
     </Card>
   );

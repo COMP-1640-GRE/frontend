@@ -12,6 +12,8 @@ import {
   CategoryShow,
 } from "../periods";
 import { Login } from "../login";
+import { ForgotPassword } from "../forgotPassword";
+import { ActivateAccount } from "../activate-account";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -39,8 +41,12 @@ export const nonAuthRoutes: RouteProps[] = [
     path: "/login",
     element: <Login />,
   },
-  //   {
-  //     path: "/forgot-password",
-  //     element: <ForgotPassword />,
-  //   },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/activate-account",
+    element: <ActivateAccount />,
+  },
 ];
