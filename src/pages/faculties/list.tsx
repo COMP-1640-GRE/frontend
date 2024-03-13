@@ -11,13 +11,13 @@ import { BaseRecord, IResourceComponentsProps, useMany } from "@refinedev/core";
 import { Space, Table } from "antd";
 import React from "react";
 
-export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
+export const FacultyList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps } = useTable({
     syncWithLocation: true,
   });
 
   const { data: categoryData, isLoading: categoryIsLoading } = useMany({
-    resource: "categories",
+    resource: "faculties",
     ids:
       tableProps?.dataSource
         ?.map((item) => item?.category?.id)

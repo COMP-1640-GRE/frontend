@@ -55,8 +55,6 @@ export const authProvider: AuthBindings = {
   },
   check: async () => {
     const token = Cookies.get(CookiesKey.TOKEN);
-    console.log(token);
-
     if (token) {
       return {
         authenticated: true,
@@ -69,7 +67,11 @@ export const authProvider: AuthBindings = {
     };
   },
   // TODO: Implement
-  getPermissions: async () => null,
+  getPermissions: async (params) => {
+    console.log("getPermissions", params);
+
+    return null;
+  },
   getIdentity: async () => {
     const user = localStorage.getItem(LocalStorageKey.USER);
     if (user) {

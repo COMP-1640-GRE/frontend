@@ -39,11 +39,7 @@ export const BlogPostCreate: React.FC<IResourceComponentsProps> = () => {
         <Form.Item
           label={"Category"}
           name={["category", "id"]}
-          rules={[
-            {
-              required: true,
-            },
-          ]}
+          rules={[{ required: true }]}
         >
           <Select {...categorySelectProps} />
         </Form.Item>
@@ -51,11 +47,7 @@ export const BlogPostCreate: React.FC<IResourceComponentsProps> = () => {
           label={"Status"}
           name={["status"]}
           initialValue={"draft"}
-          rules={[
-            {
-              required: true,
-            },
-          ]}
+          rules={[{ required: true }]}
         >
           <Select
             defaultValue={"draft"}
