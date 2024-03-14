@@ -67,10 +67,12 @@ export const authProvider: AuthBindings = {
     };
   },
   // TODO: Implement
-  getPermissions: async (params) => {
-    console.log("getPermissions", params);
-
-    return null;
+  getPermissions: async () => {
+    const user = localStorage.getItem(LocalStorageKey.USER);
+    if (user) {
+      return JSON.parse(user)?.role;
+    }
+    return;
   },
   getIdentity: async () => {
     const user = localStorage.getItem(LocalStorageKey.USER);

@@ -19,6 +19,7 @@ import { resources } from "./refineResources";
 import "@refinedev/antd/dist/reset.css";
 import { useTranslation } from "react-i18next";
 import api, { baseURL } from "./services/apis";
+import { accessControlProvider } from "./services/access-control-provider";
 
 function App() {
   const dataProvider = nestjsxCrudDataProvider(baseURL, api);
@@ -39,6 +40,7 @@ function App() {
                 dataProvider={dataProvider}
                 notificationProvider={useNotificationProvider}
                 authProvider={authProvider}
+                accessControlProvider={accessControlProvider}
                 routerProvider={routerBindings}
                 resources={resources}
                 i18nProvider={i18nProvider}

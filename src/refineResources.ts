@@ -1,6 +1,12 @@
 import { ResourceProps } from "@refinedev/core";
 
-export const resources: ResourceProps[] = [
+export type Resource = "faculties" | "periods";
+
+interface IResourceProps extends ResourceProps {
+  name: Resource;
+}
+
+export const resources: IResourceProps[] = [
   {
     name: "faculties",
     list: "/faculties",

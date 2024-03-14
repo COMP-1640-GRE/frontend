@@ -52,7 +52,6 @@ export const PeriodList: React.FC<IResourceComponentsProps> = () => {
     onSearch: (params) => {
       const filters: CrudFilters = [];
       const { end_date, start_date, name } = params;
-      console.log(name);
 
       if (name) {
         filters.push({
