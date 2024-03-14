@@ -1,74 +1,100 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
   DateField,
   DeleteButton,
   EditButton,
   List,
-  MarkdownField,
   ShowButton,
   useTable,
 } from "@refinedev/antd";
-import { BaseRecord, IResourceComponentsProps, useMany } from "@refinedev/core";
-import { Space, Table } from "antd";
+import {
+  BaseRecord,
+  CrudFilters,
+  IResourceComponentsProps,
+} from "@refinedev/core";
+import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
 
 export const FacultyList: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps } = useTable({
+  const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
-  });
+    onSearch: (params: any) => {
+      const filters: CrudFilters = [];
+      const { name } = params;
 
-  const { data: categoryData, isLoading: categoryIsLoading } = useMany({
-    resource: "faculties",
-    ids:
-      tableProps?.dataSource
-        ?.map((item) => item?.category?.id)
-        .filter(Boolean) ?? [],
-    queryOptions: {
-      enabled: !!tableProps?.dataSource,
+      if (name) {
+        filters.push({
+          field: "name",
+          operator: "contains",
+          value: name,
+        });
+      }
+
+      return filters;
     },
   });
 
   return (
-    <List>
-      <Table {...tableProps} rowKey="id">
-        <Table.Column dataIndex="id" title={"ID"} />
-        <Table.Column dataIndex="title" title={"Title"} />
-        <Table.Column
-          dataIndex="content"
-          title={"Content"}
-          render={(value: any) => {
-            if (!value) return "-";
-            return <MarkdownField value={value.slice(0, 80) + "..."} />;
-          }}
-        />
-        <Table.Column
-          dataIndex={"category"}
-          title={"Category"}
-          render={(value) =>
-            categoryIsLoading ? (
-              <>Loading...</>
-            ) : (
-              categoryData?.data?.find((item) => item.id === value?.id)?.title
-            )
-          }
-        />
-        <Table.Column dataIndex="status" title={"Status"} />
-        <Table.Column
-          dataIndex={["createdAt"]}
-          title={"Created at"}
-          render={(value: any) => <DateField value={value} />}
-        />
-        <Table.Column
-          title={"Actions"}
-          dataIndex="actions"
-          render={(_, record: BaseRecord) => (
-            <Space>
-              <EditButton hideText size="small" recordItemId={record.id} />
-              <ShowButton hideText size="small" recordItemId={record.id} />
-              <DeleteButton hideText size="small" recordItemId={record.id} />
-            </Space>
-          )}
-        />
-      </Table>
-    </List>
+    <Row gutter={[16, 16]}>
+      <Col lg={18} xs={24}>
+        <List>
+          <Table {...tableProps} rowKey="id">
+            <Table.Column dataIndex="id" title={"ID"} sorter />
+            <Table.Column dataIndex="name" title={"Name"} sorter />
+            <Table.Column
+              dataIndex="created_at"
+              title={"Create Date"}
+              render={(value) => <DateField value={value} />}
+              sorter
+            />
+            <Table.Column
+              title={"Actions"}
+              dataIndex="actions"
+              render={(_, record: BaseRecord) => (
+                <Space>
+                  <EditButton hideText size="small" recordItemId={record.id} />
+                  <ShowButton hideText size="small" recordItemId={record.id} />
+                  <DeleteButton
+                    hideText
+                    size="small"
+                    recordItemId={record.id}
+                  />
+                </Space>
+              )}
+            />
+          </Table>
+        </List>
+      </Col>
+      <Col lg={6} xs={24}>
+        <Card>
+          <Form layout="vertical" {...searchFormProps}>
+            <Form.Item label="Search" name="name">
+              <Input placeholder="Name" prefix={<SearchOutlined />} />
+            </Form.Item>
+            <Form.Item>
+              <Row
+                gutter={16}
+                justify="space-between"
+                align="middle"
+                style={{ marginTop: "10px" }}
+              >
+                <Button htmlType="submit" type="primary">
+                  Filter
+                </Button>
+                <Button
+                  onClick={() => {
+                    setFilters(() => []);
+                    searchFormProps.form?.resetFields();
+                  }}
+                  type="default"
+                >
+                  Reset
+                </Button>
+              </Row>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Col>
+    </Row>
   );
 };

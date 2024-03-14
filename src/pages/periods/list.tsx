@@ -56,7 +56,7 @@ export const PeriodList: React.FC<IResourceComponentsProps> = () => {
       if (name) {
         filters.push({
           field: "name",
-          operator: "containss",
+          operator: "contains",
           value: name,
         });
       }

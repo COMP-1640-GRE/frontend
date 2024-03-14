@@ -9,7 +9,7 @@ export const accessControlProvider: AccessControlProvider = {
 
     if (
       role &&
-      rolesCan[role][action as Action].includes(resource as Resource)
+      rolesCan[role][resource as Resource].includes(action as Action)
     ) {
       return { can: true };
     }
@@ -26,37 +26,27 @@ export const accessControlProvider: AccessControlProvider = {
   },
 };
 
-type Action = "list" | "create" | "edit" | "delete";
+type Action = "list" | "create" | "edit" | "delete" | "show";
 
-const rolesCan: Record<UserRole, Record<Action, Resource[]>> = {
+const rolesCan: Record<UserRole, Record<Resource, Action[]>> = {
   administrator: {
-    list: ["faculties", "periods"],
-    create: ["faculties", "periods"],
-    edit: ["faculties", "periods"],
-    delete: ["faculties", "periods"],
+    faculties: ["list", "create", "edit", "delete", "show"],
+    periods: ["list", "create", "edit", "delete", "show"],
   },
   faculty_marketing_coordinator: {
-    list: [],
-    create: [],
-    edit: [],
-    delete: [],
+    faculties: [],
+    periods: [],
   },
   university_marketing_manager: {
-    list: [],
-    create: [],
-    edit: [],
-    delete: [],
+    faculties: [],
+    periods: [],
   },
   guest: {
-    list: [],
-    create: [],
-    edit: [],
-    delete: [],
+    faculties: [],
+    periods: [],
   },
   student: {
-    list: [],
-    create: [],
-    edit: [],
-    delete: [],
+    faculties: [],
+    periods: [],
   },
 };

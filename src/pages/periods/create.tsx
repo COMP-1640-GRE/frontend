@@ -3,7 +3,7 @@ import { IResourceComponentsProps } from "@refinedev/core";
 import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import React from "react";
 
-export const CategoryCreate: React.FC<IResourceComponentsProps> = () => {
+export const PeriodCreate: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps } = useForm({});
 
   const { selectProps: facultyQueryResult } = useSelect({

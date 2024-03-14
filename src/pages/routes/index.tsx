@@ -1,12 +1,12 @@
 import { Route, RouteProps } from "react-router-dom";
 import {
-  BlogPostCreate,
-  BlogPostEdit,
+  FacultyCreate,
+  FacultyEdit,
   FacultyList,
-  BlogPostShow,
+  FacultyShow,
 } from "../faculties";
 import {
-  CategoryCreate,
+  PeriodCreate,
   CategoryEdit,
   PeriodList,
   CategoryShow,
@@ -20,16 +20,16 @@ export const authRoutes: RouteProps[] = [
     path: "/faculties",
     children: [
       <Route index element={<FacultyList />} />,
-      <Route path="create" element={<BlogPostCreate />} />,
-      <Route path="edit/:id" element={<BlogPostEdit />} />,
-      <Route path="show/:id" element={<BlogPostShow />} />,
+      <Route path="create" element={<FacultyCreate />} />,
+      <Route path="edit/:id" element={<FacultyEdit />} />,
+      <Route path="show/:id" element={<FacultyShow />} />,
     ],
   },
   {
     path: "/periods",
     children: [
       <Route index element={<PeriodList />} />,
-      <Route path="create" element={<CategoryCreate />} />,
+      <Route path="create" element={<PeriodCreate />} />,
       <Route path="edit/:id" element={<CategoryEdit />} />,
       <Route path="show/:id" element={<CategoryShow />} />,
     ],
