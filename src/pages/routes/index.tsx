@@ -5,15 +5,11 @@ import {
   FacultyList,
   FacultyShow,
 } from "../faculties";
-import {
-  PeriodCreate,
-  CategoryEdit,
-  PeriodList,
-  CategoryShow,
-} from "../periods";
+import { PeriodCreate, PeriodEdit, PeriodList, PeriodShow } from "../periods";
 import { Login } from "../login";
 import { ForgotPassword } from "../forgotPassword";
 import { ActivateAccount } from "../activate-account";
+import { UserCreate, UserEdit, UserList, UserShow } from "../users";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -30,8 +26,17 @@ export const authRoutes: RouteProps[] = [
     children: [
       <Route index element={<PeriodList />} />,
       <Route path="create" element={<PeriodCreate />} />,
-      <Route path="edit/:id" element={<CategoryEdit />} />,
-      <Route path="show/:id" element={<CategoryShow />} />,
+      <Route path="edit/:id" element={<PeriodEdit />} />,
+      <Route path="show/:id" element={<PeriodShow />} />,
+    ],
+  },
+  {
+    path: "/users",
+    children: [
+      <Route index element={<UserList />} />,
+      <Route path="create" element={<UserCreate />} />,
+      <Route path="edit/:id" element={<UserEdit />} />,
+      <Route path="show/:id" element={<UserShow />} />,
     ],
   },
 ];

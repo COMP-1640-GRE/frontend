@@ -4,7 +4,7 @@ import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import React from "react";
 import dayjs from "../../libs/dayjs";
 
-export const CategoryEdit: React.FC<IResourceComponentsProps> = () => {
+export const PeriodEdit: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps } = useForm({});
 
   const { selectProps: facultyQueryResult } = useSelect({

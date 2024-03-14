@@ -5,7 +5,7 @@ import React from "react";
 
 const { Title } = Typography;
 
-export const CategoryShow: React.FC<IResourceComponentsProps> = () => {
+export const PeriodShow: React.FC<IResourceComponentsProps> = () => {
   const { queryResult } = useShow({});
   const { data, isLoading } = queryResult;
 
