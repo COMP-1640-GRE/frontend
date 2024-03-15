@@ -4,7 +4,6 @@ import {
   DeleteButton,
   EditButton,
   List,
-  ShowButton,
   useTable,
 } from "@refinedev/antd";
 import {
@@ -99,7 +98,8 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
               render={(_, record: BaseRecord) => (
                 <Space>
                   <EditButton hideText size="small" recordItemId={record.id} />
-                  <ShowButton hideText size="small" recordItemId={record.id} />
+                  {/* TODO: Add Show */}
+                  {/* <ShowButton hideText size="small" recordItemId={record.id} /> */}
                   <Button
                     icon={<LockOutlined />}
                     size="small"

@@ -4,7 +4,6 @@ import { Form, Input, Select } from "antd";
 import React from "react";
 import RoleTag from "../../components/elements/RoleTag";
 import { UserRole } from "../../enums/user.enum";
-import { uniq } from "lodash";
 
 export const UserCreate: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps } = useForm({});
@@ -12,8 +11,6 @@ export const UserCreate: React.FC<IResourceComponentsProps> = () => {
     resource: "faculties",
     optionLabel: "name",
   });
-  const [usernames, setUsernames] = React.useState<string[]>([]);
-  console.log(usernames);
 
   return (
     <Create saveButtonProps={saveButtonProps}>

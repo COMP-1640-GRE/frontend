@@ -9,8 +9,6 @@ interface IProps extends TagProps {
 }
 
 const RoleTag = ({ role, ...props }: IProps) => {
-  console.log(role);
-
   return (
     <Tag color={ROLE_TAG_COLOR[role]} {...props}>
       {capitalize(role.replaceAll("_", " "))}
