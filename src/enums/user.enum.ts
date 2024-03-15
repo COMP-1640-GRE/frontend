@@ -5,3 +5,9 @@ export enum UserRole {
   UNIVERSITY_MARKETING_MANAGER = "university_marketing_manager",
   FACULTY_MARKETING_COORDINATOR = "faculty_marketing_coordinator",
 }
+
+export enum AccountStatus {
+  LOCKED = "locked",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}

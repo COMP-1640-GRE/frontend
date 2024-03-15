@@ -16,6 +16,8 @@ import {
 import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
 import { useMutation } from "react-query";
+import AccountStatusTag from "../../components/elements/AccountStatusTag";
+import RoleTag from "../../components/elements/RoleTag";
 import api from "../../services/apis";
 
 export const UserList: React.FC<IResourceComponentsProps> = () => {
@@ -69,9 +71,19 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
         <List>
           <Table {...tableProps} rowKey="id">
             <Table.Column dataIndex="id" title="ID" sorter />
-            <Table.Column dataIndex="role" title="Role" sorter />
+            <Table.Column
+              dataIndex="role"
+              title="Role"
+              sorter
+              render={(value) => <RoleTag role={value} />}
+            />
             <Table.Column dataIndex="username" title="Username" sorter />
-            <Table.Column dataIndex="account_status" title="Status" sorter />
+            <Table.Column
+              dataIndex="account_status"
+              title="Status"
+              sorter
+              render={(value) => <AccountStatusTag status={value} />}
+            />
             <Table.Column dataIndex="first_name" title="First name" sorter />
             <Table.Column dataIndex="last_name" title="Last name" sorter />
             <Table.Column dataIndex="email" title="Email" sorter />
