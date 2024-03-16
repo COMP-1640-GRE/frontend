@@ -1,32 +1,29 @@
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import { useGetIdentity } from "@refinedev/core";
+import { useGetIdentity, useLogout } from "@refinedev/core";
 import {
-  Avatar,
   Layout as AntdLayout,
+  Avatar,
+  Dropdown,
   Space,
   Switch,
-  theme,
   Typography,
+  theme,
 } from "antd";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../../contexts/color-mode";
+import { Identity } from "../../services/types";
+import { Link } from "react-router-dom";
 
 const { Text } = Typography;
 const { useToken } = theme;
-
-type IUser = {
-  id: number;
-  name: string;
-  avatar: string;
-};
 
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   sticky,
 }) => {
   const { token } = useToken();
-  const { data: user } = useGetIdentity<IUser>();
+  const { data: user } = useGetIdentity<Identity>();
   const { mode, setMode } = useContext(ColorModeContext);
-
+  const { mutate: logout } = useLogout();
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
@@ -51,10 +48,30 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
           onChange={() => setMode(mode === "light" ? "dark" : "light")}
           defaultChecked={mode === "dark"}
         />
-        <Space style={{ marginLeft: "8px" }} size="middle">
-          {user?.name && <Text strong>{user.name}</Text>}
-          {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
-        </Space>
+        <Dropdown
+          // trigger={["click"]}
+          menu={{
+            items: [
+              {
+                label: <Link to="/change-password">Change password</Link>,
+                key: "change-password",
+              },
+              {
+                label: "Logout",
+                key: "logout",
+                onClick: () => logout(),
+                danger: true,
+              },
+            ],
+          }}
+        >
+          <Space style={{ marginLeft: "8px" }} size="middle">
+            <Text strong>{user?.first_name}</Text>
+            <Avatar
+            //  src={user?.avatar} alt={user?.name}
+            />
+          </Space>
+        </Dropdown>
       </Space>
     </AntdLayout.Header>
   );

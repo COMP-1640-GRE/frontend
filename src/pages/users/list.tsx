@@ -39,7 +39,7 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
   });
   const { open } = useNotification();
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: mutateLockAccount } = useMutation({
     mutationFn: async (id: number) => {
       try {
         const res = await api.patch(`/users/${id}/lock`);
@@ -103,7 +103,7 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
                   <Button
                     icon={<LockOutlined />}
                     size="small"
-                    onClick={() => record.id && mutateAsync(+record.id)}
+                    onClick={() => record.id && mutateLockAccount(+record.id)}
                   />
                   <DeleteButton
                     hideText
