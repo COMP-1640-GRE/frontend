@@ -1,4 +1,4 @@
-import { LockOutlined, SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import {
   DateField,
   DeleteButton,
@@ -10,14 +10,11 @@ import {
   BaseRecord,
   CrudFilters,
   IResourceComponentsProps,
-  useNotification,
 } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
-import { useMutation } from "@tanstack/react-query";
 import AccountStatusTag from "../../components/elements/AccountStatusTag";
 import RoleTag from "../../components/elements/RoleTag";
-import api from "../../services/apis";
 
 export const UserList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters } = useTable({
@@ -35,32 +32,6 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
       }
 
       return filters;
-    },
-  });
-  const { open } = useNotification();
-
-  const { mutateAsync: mutateLockAccount } = useMutation({
-    mutationFn: async (id: number) => {
-      try {
-        const res = await api.patch(`/users/${id}/lock`);
-        let description = "User unlocked successfully";
-        if (res?.data["account_status"] === "locked") {
-          description = "User locked successfully";
-        }
-        return open?.({
-          message: "Success",
-          type: "success",
-          description,
-          undoableTimeout: 3000,
-        });
-      } catch (error) {
-        return open?.({
-          message: "Error",
-          type: "error",
-          description: "Failed to lock user",
-          undoableTimeout: 3000,
-        });
-      }
     },
   });
 
@@ -100,11 +71,6 @@ export const UserList: React.FC<IResourceComponentsProps> = () => {
                   <EditButton hideText size="small" recordItemId={record.id} />
                   {/* TODO: Add Show */}
                   {/* <ShowButton hideText size="small" recordItemId={record.id} /> */}
-                  <Button
-                    icon={<LockOutlined />}
-                    size="small"
-                    onClick={() => record.id && mutateLockAccount(+record.id)}
-                  />
                   <DeleteButton
                     hideText
                     size="small"

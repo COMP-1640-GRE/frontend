@@ -6,13 +6,15 @@ import {
   useForm,
   useSelect,
 } from "@refinedev/antd";
-import { IResourceComponentsProps, useNotification } from "@refinedev/core";
+import {
+  IResourceComponentsProps,
+  useCustomMutation,
+  useNotification,
+} from "@refinedev/core";
 import { Button, Col, Form, Input, Row, Select } from "antd";
 import React from "react";
-import { useMutation } from "@tanstack/react-query";
 import RoleTag from "../../components/elements/RoleTag";
 import { UserRole } from "../../enums/user.enum";
-import api from "../../services/apis";
 
 export const UserEdit: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps, formLoading, id } = useForm({});
@@ -21,54 +23,56 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
     optionLabel: "name",
   });
   const { open } = useNotification();
-  const { mutateAsync: mutateLockAccount } = useMutation({
-    mutationFn: async (id: number) => {
-      try {
-        const res = await api.patch(`/users/${id}/lock`);
-        let description = "User unlocked successfully";
-        if (res?.data["account_status"] === "locked") {
-          description = "User locked successfully";
-        }
-        return open?.({
-          message: "Success",
-          type: "success",
-          description,
-          undoableTimeout: 3000,
-        });
-      } catch (error) {
-        return open?.({
-          message: "Error",
-          type: "error",
-          description: "Failed to lock user",
-          undoableTimeout: 3000,
-        });
+  const { mutate: mutateLockAccount } = useCustomMutation();
+
+  const lockAccount = async (id: number) =>
+    mutateLockAccount(
+      {
+        method: "patch",
+        url: `/users/${id}/lock`,
+        values: {},
+      },
+      {
+        onSuccess: (res) => {
+          let description = "User unlocked successfully";
+          if (res?.data["account_status"] === "locked") {
+            description = "User locked successfully";
+          }
+
+          open?.({
+            message: "Success",
+            type: "success",
+            description,
+            undoableTimeout: 3000,
+          });
+        },
       }
-    },
-  });
-  const { mutateAsync: mutateResetPassword } = useMutation({
-    mutationFn: async (id: number) => {
-      try {
-        const res = await api.patch(`/users/${id}/reset-password`);
-        let description = "Reset password successfully";
-        if (res?.data["account_status"] === "locked") {
-          description = "User locked successfully";
-        }
-        return open?.({
-          message: "Success",
-          type: "success",
-          description,
-          undoableTimeout: 3000,
-        });
-      } catch (error) {
-        return open?.({
-          message: "Error",
-          type: "error",
-          description: "Failed to reset password",
-          undoableTimeout: 3000,
-        });
+    );
+
+  const { mutate: mutateResetPassword } = useCustomMutation();
+
+  const resetPassword = (id: number) =>
+    mutateResetPassword(
+      {
+        method: "patch",
+        url: `/users/${id}/reset-password`,
+        values: {},
+      },
+      {
+        onSuccess: (res) => {
+          let description = "Reset password successfully";
+          if (res?.data["account_status"] === "locked") {
+            description = "User locked successfully";
+          }
+          open?.({
+            message: "Success",
+            type: "success",
+            description,
+            undoableTimeout: 3000,
+          });
+        },
       }
-    },
-  });
+    );
 
   return (
     <Edit
@@ -77,15 +81,12 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
       footerButtons={[
         <SaveButton />,
         <DeleteButton />,
-        <Button
-          icon={<LockOutlined />}
-          onClick={() => id && mutateLockAccount(+id)}
-        >
+        <Button icon={<LockOutlined />} onClick={() => id && lockAccount(+id)}>
           Lock
         </Button>,
         <Button
           icon={<ReloadOutlined />}
-          onClick={() => id && mutateResetPassword(+id)}
+          onClick={() => id && resetPassword(+id)}
         >
           Reset Password
         </Button>,

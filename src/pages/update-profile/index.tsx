@@ -1,5 +1,5 @@
 import { ThemedTitleV2 } from "@refinedev/antd";
-import { useNotification, useTranslate } from "@refinedev/core";
+import { useCustomMutation, useTranslate } from "@refinedev/core";
 import {
   Button,
   Card,
@@ -12,10 +12,7 @@ import {
   theme,
 } from "antd";
 import { CSSProperties } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { LocalStorageKey } from "../../enums/local-storage.enum";
-import api from "../../services/apis";
 
 type UpdateForm = {
   email: string;
@@ -28,28 +25,14 @@ export const UpdateProfile = () => {
   const [form] = Form.useForm<UpdateForm>();
   const translate = useTranslate();
   const navigate = useNavigate();
-  const { open } = useNotification();
 
-  const { mutate: login, isLoading } = useMutation({
-    mutationFn: async (args: UpdateForm) => {
-      const remember = localStorage.getItem(LocalStorageKey.REMEMBER);
-      if (remember) {
-        localStorage.removeItem(LocalStorageKey.REMEMBER);
-      }
+  const { mutate, isLoading } = useCustomMutation();
 
-      const res = await api.patch("/users", args);
-
-      if (res) {
-        open?.({
-          message: "Success",
-          type: "success",
-          description: "Profile updated successfully",
-          undoableTimeout: 3000,
-        });
-        navigate("/");
-      }
-    },
-  });
+  const update = (values: UpdateForm) =>
+    mutate(
+      { method: "patch", url: "/users", values },
+      { onSuccess: () => navigate("/") }
+    );
 
   const PageTitle = (
     <div
@@ -89,7 +72,7 @@ export const UpdateProfile = () => {
       <Form<UpdateForm>
         layout="vertical"
         form={form}
-        onFinish={(values) => login(values)}
+        onFinish={(values) => update(values)}
         requiredMark={false}
         initialValues={{
           remember: false,

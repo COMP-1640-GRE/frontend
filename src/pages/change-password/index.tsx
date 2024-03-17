@@ -1,5 +1,9 @@
 import { ThemedTitleV2 } from "@refinedev/antd";
-import { useNotification, useTranslate } from "@refinedev/core";
+import {
+  useCustomMutation,
+  useNotification,
+  useTranslate,
+} from "@refinedev/core";
 import {
   Button,
   Card,
@@ -12,9 +16,7 @@ import {
   theme,
 } from "antd";
 import { CSSProperties } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import api from "../../services/apis";
 
 type ChangePasswordForm = {
   password: string;
@@ -29,12 +31,14 @@ export const ChangePassword = () => {
   const navigate = useNavigate();
   const { open } = useNotification();
 
-  const { mutate: login, isLoading } = useMutation({
-    mutationFn: async ({
-      password,
-      new_password,
-      confirm_password,
-    }: ChangePasswordForm) => {
+  const { mutate, isLoading } = useCustomMutation();
+
+  const changePassword = ({
+    password,
+    new_password,
+    confirm_password,
+  }: ChangePasswordForm) => {
+    {
       if (new_password !== confirm_password) {
         return open?.({
           message: "Error",
@@ -44,22 +48,18 @@ export const ChangePassword = () => {
         });
       }
 
-      const res = await api.patch("/users/change-password", {
-        password,
-        new_password,
-      });
-
-      if (res) {
-        open?.({
-          message: "Success",
-          type: "success",
-          description: "Password changed successfully",
-          undoableTimeout: 3000,
-        });
-        navigate("/");
-      }
-    },
-  });
+      return mutate(
+        {
+          method: "patch",
+          url: "/users/change-password",
+          values: { password, new_password },
+        },
+        {
+          onSuccess: () => navigate("/"),
+        }
+      );
+    }
+  };
 
   const PageTitle = (
     <div
@@ -99,7 +99,7 @@ export const ChangePassword = () => {
       <Form<ChangePasswordForm>
         layout="vertical"
         form={form}
-        onFinish={(values) => login(values)}
+        onFinish={(values) => changePassword(values)}
         requiredMark={false}
         initialValues={{
           remember: false,
