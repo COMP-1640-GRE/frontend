@@ -1,9 +1,9 @@
 import { AuthBindings } from "@refinedev/core";
-import api from "./apis";
-import { LocalStorageKey } from "../enums/local-storage.enum";
 import { AxiosError } from "axios";
-import Cookies from "js-cookie";
-import { CookiesKey } from "../enums/cookies.enum";
+import { LocalStorageKey } from "../enums/local-storage.enum";
+import { AccountStatus } from "../enums/user.enum";
+import api from "./apis";
+import { Identity } from "./types";
 
 export const TOKEN_KEY = "refine-auth";
 
@@ -54,8 +54,9 @@ export const authProvider: AuthBindings = {
     };
   },
   check: async () => {
-    const token = Cookies.get(CookiesKey.TOKEN);
-    if (token) {
+    const user = getUser();
+
+    if (user?.account_status === AccountStatus.ACTIVE) {
       return {
         authenticated: true,
       };
@@ -68,21 +69,25 @@ export const authProvider: AuthBindings = {
   },
   // TODO: Implement
   getPermissions: async () => {
-    const user = localStorage.getItem(LocalStorageKey.USER);
+    const user = getUser();
     if (user) {
-      return JSON.parse(user)?.role;
+      return user.role;
     }
     return;
   },
-  getIdentity: async () => {
-    const user = localStorage.getItem(LocalStorageKey.USER);
-    if (user) {
-      return JSON.parse(user);
-    }
-    return null;
-  },
+  getIdentity: async () => getUser(),
   onError: async (error) => {
     console.error(error);
     return { error };
   },
+};
+
+const getUser = () => {
+  const user = localStorage.getItem(LocalStorageKey.USER);
+
+  if (user) {
+    return JSON.parse(user) as Identity;
+  }
+
+  return null;
 };

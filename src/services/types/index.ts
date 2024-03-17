@@ -1,11 +1,13 @@
+import { AccountStatus, UserRole } from "../../enums/user.enum";
+
 export interface Identity {
   id: number;
   username: string;
-  role: string;
+  role: UserRole;
   email?: string;
   first_name?: string;
   last_name?: string;
-  account_status: string;
+  account_status: AccountStatus;
   created_at: string;
   updated_at: string;
   faculty: Faculty;
