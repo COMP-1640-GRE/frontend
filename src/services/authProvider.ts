@@ -1,7 +1,8 @@
 import { AuthBindings } from "@refinedev/core";
 import { AxiosError } from "axios";
+import Cookies from "js-cookie";
+import { CookiesKey } from "../enums/cookies.enum";
 import { LocalStorageKey } from "../enums/local-storage.enum";
-import { AccountStatus } from "../enums/user.enum";
 import api from "./apis";
 import { Identity } from "./types";
 
@@ -54,9 +55,8 @@ export const authProvider: AuthBindings = {
     };
   },
   check: async () => {
-    const user = getUser();
-
-    if (user?.account_status === AccountStatus.ACTIVE) {
+    const token = Cookies.get(CookiesKey.TOKEN);
+    if (token) {
       return {
         authenticated: true,
       };
