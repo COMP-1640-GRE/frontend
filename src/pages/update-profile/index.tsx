@@ -12,7 +12,7 @@ import {
   theme,
 } from "antd";
 import { CSSProperties } from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { LocalStorageKey } from "../../enums/local-storage.enum";
 import api from "../../services/apis";

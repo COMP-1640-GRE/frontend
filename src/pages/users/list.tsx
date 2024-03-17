@@ -14,7 +14,7 @@ import {
 } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import AccountStatusTag from "../../components/elements/AccountStatusTag";
 import RoleTag from "../../components/elements/RoleTag";
 import api from "../../services/apis";

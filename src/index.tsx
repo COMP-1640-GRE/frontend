@@ -1,21 +1,16 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-
 import App from "./App";
 import "./i18n";
 import "./styles/tailwind.css";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>
     <React.Suspense fallback="loading">
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      <App />
     </React.Suspense>
   </React.StrictMode>
 );

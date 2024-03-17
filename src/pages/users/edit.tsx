@@ -9,7 +9,7 @@ import {
 import { IResourceComponentsProps, useNotification } from "@refinedev/core";
 import { Button, Col, Form, Input, Row, Select } from "antd";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import RoleTag from "../../components/elements/RoleTag";
 import { UserRole } from "../../enums/user.enum";
 import api from "../../services/apis";

@@ -1,29 +1,30 @@
-import React, { CSSProperties } from "react";
+import { ThemedTitleV2 } from "@refinedev/antd";
 import {
-  LoginPageProps,
   LoginFormTypes,
+  LoginPageProps,
   useLink,
+  useLogin,
+  useRouterContext,
   useRouterType,
-  useActiveAuthProvider,
+  useTranslate,
 } from "@refinedev/core";
 import {
-  Row,
-  Col,
-  Layout,
-  Card,
-  Typography,
-  Form,
-  Input,
   Button,
-  Checkbox,
+  Card,
   CardProps,
-  LayoutProps,
+  Checkbox,
+  Col,
   Divider,
+  Form,
   FormProps,
+  Input,
+  Layout,
+  LayoutProps,
+  Row,
+  Typography,
   theme,
 } from "antd";
-import { useLogin, useTranslate, useRouterContext } from "@refinedev/core";
-import { ThemedTitleV2 } from "@refinedev/antd";
+import React, { CSSProperties } from "react";
 
 type LoginProps = LoginPageProps<LayoutProps, CardProps, FormProps>;
 /**
@@ -51,10 +52,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const ActiveLink = routerType === "legacy" ? LegacyLink : Link;
 
-  const authProvider = useActiveAuthProvider();
-  const { mutate: login, isLoading } = useLogin<LoginFormTypes>({
-    v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
-  });
+  const { mutateAsync: login, isLoading } = useLogin<LoginFormTypes>();
 
   const PageTitle =
     title === false ? null : (

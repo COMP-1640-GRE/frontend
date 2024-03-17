@@ -1,5 +1,10 @@
 import { ThemedTitleV2 } from "@refinedev/antd";
-import { useGetIdentity, useNotification, useTranslate } from "@refinedev/core";
+import {
+  useCustomMutation,
+  useGetIdentity,
+  useNotification,
+  useTranslate,
+} from "@refinedev/core";
 import {
   Button,
   Card,
@@ -12,10 +17,8 @@ import {
   theme,
 } from "antd";
 import { CSSProperties } from "react";
-import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { LocalStorageKey } from "../../enums/local-storage.enum";
-import api from "../../services/apis";
 import { Identity } from "../../services/types";
 
 type ActivateForm = {
@@ -35,35 +38,42 @@ export const ActivateAccount = () => {
   const navigate = useNavigate();
   const { open } = useNotification();
   const { data: identity } = useGetIdentity<Identity>();
+  const { mutate, isLoading } = useCustomMutation();
 
-  const { mutate: login, isLoading } = useMutation({
-    mutationFn: async (args: ActivateForm) => {
-      if (args.new_password !== args.confirm_password) {
-        return open?.({
-          message: "Error",
-          type: "error",
-          description: "Passwords do not match",
-          undoableTimeout: 3000,
-        });
-      }
-
-      const remember = localStorage.getItem(LocalStorageKey.REMEMBER);
-      if (remember) {
-        localStorage.removeItem(LocalStorageKey.REMEMBER);
-      }
-
-      const res = await api.patch("/auth/activate-account", {
-        ...args,
-        username: identity?.username,
-        remember: !!remember,
+  const activate = (args: ActivateForm) => {
+    if (args.new_password !== args.confirm_password) {
+      return open?.({
+        message: "Error",
+        type: "error",
+        description: "Passwords do not match",
+        undoableTimeout: 3000,
       });
+    }
 
-      if (res) {
-        localStorage.setItem(LocalStorageKey.USER, JSON.stringify(res.data));
-        navigate("/");
+    const remember = localStorage.getItem(LocalStorageKey.REMEMBER);
+
+    return mutate(
+      {
+        method: "patch",
+        url: "/auth/activate-account",
+        values: {
+          ...args,
+          username: identity?.username,
+          remember: !!remember,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          if (remember) {
+            localStorage.removeItem(LocalStorageKey.REMEMBER);
+          }
+
+          localStorage.setItem(LocalStorageKey.USER, JSON.stringify(res.data));
+          navigate("/");
+        },
       }
-    },
-  });
+    );
+  };
 
   const PageTitle = (
     <div
@@ -103,7 +113,7 @@ export const ActivateAccount = () => {
       <Form<ActivateForm>
         layout="vertical"
         form={form}
-        onFinish={(values) => login(values)}
+        onFinish={(values) => activate(values)}
         requiredMark={false}
         initialValues={{
           remember: false,
