@@ -76,10 +76,9 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
 
   return (
     <Edit
-      saveButtonProps={saveButtonProps}
       isLoading={formLoading}
       footerButtons={[
-        <SaveButton />,
+        <SaveButton {...saveButtonProps} />,
         <DeleteButton />,
         <Button icon={<LockOutlined />} onClick={() => id && lockAccount(+id)}>
           Lock
