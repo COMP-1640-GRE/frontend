@@ -92,8 +92,8 @@ export const PeriodList: React.FC<IResourceComponentsProps> = () => {
   });
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col lg={18} xs={24}>
+    <Row gutter={[16, 16]} className="max-md:flex-col-reverse">
+      <Col md={18} xs={24}>
         <List>
           <Table {...tableProps} rowKey="id">
             <Table.Column dataIndex="id" title={"ID"} sorter />
@@ -138,7 +138,7 @@ export const PeriodList: React.FC<IResourceComponentsProps> = () => {
           </Table>
         </List>
       </Col>
-      <Col lg={6} xs={24}>
+      <Col md={6} xs={24}>
         <Card>
           <Form layout="vertical" {...searchFormProps}>
             <Form.Item label="Search" name="name">
