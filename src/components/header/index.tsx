@@ -57,6 +57,10 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
                 key: "change-password",
               },
               {
+                label: <Link to="/update-profile">Update profile</Link>,
+                key: "update-profile",
+              },
+              {
                 label: "Logout",
                 key: "logout",
                 onClick: () => logout(),

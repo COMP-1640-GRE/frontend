@@ -15,7 +15,9 @@ export const AuthElement = (
   >
     <ThemedLayoutV2
       Header={() => <Header sticky />}
-      Sider={(props) => <ThemedSiderV2 {...props} fixed />}
+      Sider={(props) => (
+        <ThemedSiderV2 {...props} fixed render={({ items }) => <>{items}</>} />
+      )}
       Title={({ collapsed }) => (
         <ThemedTitleV2
           collapsed={collapsed}

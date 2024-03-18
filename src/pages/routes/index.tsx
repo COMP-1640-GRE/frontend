@@ -11,6 +11,7 @@ import { ForgotPassword } from "../forgotPassword";
 import { ActivateAccount } from "../activate-account";
 import { UserCreate, UserEdit, UserList, UserShow } from "../users";
 import { ChangePassword } from "../change-password";
+import { UpdateProfile } from "../update-profile";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -43,6 +44,10 @@ export const authRoutes: RouteProps[] = [
   {
     path: "/change-password",
     element: <ChangePassword />,
+  },
+  {
+    path: "/update-profile",
+    element: <UpdateProfile />,
   },
 ];
 
