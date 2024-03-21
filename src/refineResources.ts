@@ -1,6 +1,6 @@
 import { ResourceProps } from "@refinedev/core";
 
-export type Resource = "faculties" | "periods" | "users";
+export type Resource = "faculties" | "semesters" | "users";
 
 interface IResourceProps extends ResourceProps {
   name: Resource;
@@ -18,11 +18,11 @@ export const resources: IResourceProps[] = [
     },
   },
   {
-    name: "periods",
-    list: "/periods",
-    create: "/periods/create",
-    edit: "/periods/edit/:id",
-    show: "/periods/show/:id",
+    name: "semesters",
+    list: "/semesters",
+    create: "/semesters/create",
+    edit: "/semesters/edit/:id",
+    show: "/semesters/show/:id",
     meta: {
       canDelete: true,
     },

@@ -29,24 +29,24 @@ import { Dayjs } from "dayjs";
 import React from "react";
 const { RangePicker } = DatePicker;
 
-interface IPeriod {
+interface ISemester {
   id: number;
   name: string;
   description: string;
   start_date: string;
   end_date: string;
 }
-interface IPeriodFilters {
+interface ISemesterFilters {
   name: string;
   start_date: [Dayjs, Dayjs];
   end_date: [Dayjs, Dayjs];
 }
 
-export const PeriodList: React.FC<IResourceComponentsProps> = () => {
+export const SemesterList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters } = useTable<
-    IPeriod,
+    ISemester,
     HttpError,
-    IPeriodFilters
+    ISemesterFilters
   >({
     syncWithLocation: true,
     onSearch: (params) => {

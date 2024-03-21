@@ -5,7 +5,7 @@ import React from "react";
 
 const { Title } = Typography;
 
-export const PeriodShow: React.FC<IResourceComponentsProps> = () => {
+export const SemesterShow: React.FC<IResourceComponentsProps> = () => {
   const { queryResult } = useShow({});
   const { data, isLoading } = queryResult;
 

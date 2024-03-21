@@ -31,7 +31,7 @@ type Action = "list" | "create" | "edit" | "delete" | "show";
 const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
   administrator: {
     users: ["list", "create", "edit", "delete", "show"],
-    periods: ["list", "create", "edit", "delete", "show"],
+    semesters: ["list", "create", "edit", "delete", "show"],
     faculties: ["list", "create", "edit", "delete", "show"],
   },
   faculty_marketing_coordinator: {},

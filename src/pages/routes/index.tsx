@@ -5,7 +5,12 @@ import {
   FacultyList,
   FacultyShow,
 } from "../faculties";
-import { PeriodCreate, PeriodEdit, PeriodList, PeriodShow } from "../periods";
+import {
+  SemesterCreate,
+  SemesterEdit,
+  SemesterList,
+  SemesterShow,
+} from "../semesters";
 import { Login } from "../login";
 import { ForgotPassword } from "../forgotPassword";
 import { ActivateAccount } from "../activate-account";
@@ -24,12 +29,12 @@ export const authRoutes: RouteProps[] = [
     ],
   },
   {
-    path: "/periods",
+    path: "/semesters",
     children: [
-      <Route index element={<PeriodList />} />,
-      <Route path="create" element={<PeriodCreate />} />,
-      <Route path="edit/:id" element={<PeriodEdit />} />,
-      <Route path="show/:id" element={<PeriodShow />} />,
+      <Route index element={<SemesterList />} />,
+      <Route path="create" element={<SemesterCreate />} />,
+      <Route path="edit/:id" element={<SemesterEdit />} />,
+      <Route path="show/:id" element={<SemesterShow />} />,
     ],
   },
   {
