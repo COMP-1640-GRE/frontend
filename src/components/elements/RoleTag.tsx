@@ -2,7 +2,7 @@ import { Tag } from "antd";
 import { TagProps } from "antd/lib";
 import { capitalize } from "lodash";
 import { UserRole } from "../../enums/user.enum";
-import NotSetTag from "./NotsetTag";
+import NotSetTag from "./NotSetTag";
 
 interface IProps extends TagProps {
   role?: UserRole;
