@@ -1,6 +1,6 @@
 import { AccessControlProvider } from "@refinedev/core";
 import { UserRole } from "../enums/user.enum";
-import { Resource } from "../refineResources";
+import { Resource } from "../pages/routes/refineResources";
 import { authProvider } from "./authProvider";
 
 export const accessControlProvider: AccessControlProvider = {

@@ -19,31 +19,58 @@ import { ChangePassword } from "../change-password";
 import { UpdateProfile } from "../update-profile";
 
 export const authRoutes: RouteProps[] = [
+  // {
+  //   path: "/faculties",
+  //   children: [
+  //     <Route index element={<FacultyList />} />,
+  //     <Route path="create" element={<FacultyCreate />} />,
+  //     <Route path="edit/:id" element={<FacultyEdit />} />,
+  //     <Route path="show/:id" element={<FacultyShow />} />,
+  //   ],
+  // },
+  // {
+  //   path: "/semesters",
+  //   children: [
+  //     <Route index element={<SemesterList />} />,
+  //     <Route path="create" element={<SemesterCreate />} />,
+  //     <Route path="edit/:id" element={<SemesterEdit />} />,
+  //     <Route path="show/:id" element={<SemesterShow />} />,
+  //   ],
+  // },
+  // {
+  //   path: "/users",
+  //   children: [
+  //     <Route index element={<UserList />} />,
+  //     <Route path="create" element={<UserCreate />} />,
+  //     <Route path="edit/:id" element={<UserEdit />} />,
+  //     <Route path="show/:id" element={<UserShow />} />,
+  //   ],
+  // },
   {
-    path: "/faculties",
+    path: "admin",
     children: [
-      <Route index element={<FacultyList />} />,
-      <Route path="create" element={<FacultyCreate />} />,
-      <Route path="edit/:id" element={<FacultyEdit />} />,
-      <Route path="show/:id" element={<FacultyShow />} />,
-    ],
-  },
-  {
-    path: "/semesters",
-    children: [
-      <Route index element={<SemesterList />} />,
-      <Route path="create" element={<SemesterCreate />} />,
-      <Route path="edit/:id" element={<SemesterEdit />} />,
-      <Route path="show/:id" element={<SemesterShow />} />,
-    ],
-  },
-  {
-    path: "/users",
-    children: [
-      <Route index element={<UserList />} />,
-      <Route path="create" element={<UserCreate />} />,
-      <Route path="edit/:id" element={<UserEdit />} />,
-      <Route path="show/:id" element={<UserShow />} />,
+      <Route>
+        <Route path="faculties">
+          <Route index element={<FacultyList />} />,
+          <Route path="create" element={<FacultyCreate />} />,
+          <Route path="edit/:id" element={<FacultyEdit />} />,
+          <Route path="show/:id" element={<FacultyShow />} />,
+        </Route>
+        <Route path="semesters">
+          <Route index element={<SemesterList />} />,
+          <Route path="create" element={<SemesterCreate />} />,
+          <Route path="edit/:id" element={<SemesterEdit />} />,
+          <Route path="show/:id" element={<SemesterShow />} />,
+        </Route>
+        <Route path="users">
+          <Route index element={<UserList />} />,
+          <Route path="create" element={<UserCreate />} />,
+          <Route path="edit/:id" element={<UserEdit />} />,
+          <Route path="show/:id" element={<UserShow />} />,
+        </Route>
+        {/* <Route path="faculties">
+        </Route> */}
+      </Route>,
     ],
   },
   {

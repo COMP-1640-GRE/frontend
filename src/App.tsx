@@ -14,7 +14,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { authRoutes, nonAuthRoutes } from "./pages/routes";
 import { AuthElement, NonAuthElement } from "./pages/routes/element";
-import { resources } from "./refineResources";
+import { resources } from "./pages/routes/refineResources";
 import { accessControlProvider } from "./services/access-control-provider";
 import api, { baseURL } from "./services/apis";
 import { authProvider } from "./services/authProvider";

@@ -22,6 +22,7 @@ export const SemesterEdit: React.FC<IResourceComponentsProps> = () => {
           ...initialValues,
           start_date: dayjs(initialValues?.start_date),
           end_date: dayjs(initialValues?.end_date),
+          due_date: dayjs(initialValues?.due_date),
         }}
       >
         <Form.Item label={"Name"} name={["name"]} rules={[{ required: true }]}>
@@ -31,7 +32,7 @@ export const SemesterEdit: React.FC<IResourceComponentsProps> = () => {
           <Input multiple />
         </Form.Item>
         <Row gutter={16}>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"Faculty"}
               name={["faculty_id"]}
@@ -43,22 +44,32 @@ export const SemesterEdit: React.FC<IResourceComponentsProps> = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"Start Date"}
               name={["start_date"]}
               rules={[{ required: true }]}
+              className="w-full"
             >
-              <DatePicker showTime />
+              <DatePicker showTime style={{ width: "100%" }} />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"End Date"}
               name={["end_date"]}
               rules={[{ required: true }]}
             >
-              <DatePicker showTime />
+              <DatePicker showTime style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col span={12} md={6}>
+            <Form.Item
+              label={"Due Date"}
+              name={["due_date"]}
+              rules={[{ required: true }]}
+            >
+              <DatePicker showTime style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>

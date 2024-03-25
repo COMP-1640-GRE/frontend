@@ -35,11 +35,13 @@ interface ISemester {
   description: string;
   start_date: string;
   end_date: string;
+  due_date: string;
 }
 interface ISemesterFilters {
   name: string;
   start_date: [Dayjs, Dayjs];
   end_date: [Dayjs, Dayjs];
+  due_date: [Dayjs, Dayjs];
 }
 
 export const SemesterList: React.FC<IResourceComponentsProps> = () => {
@@ -51,7 +53,7 @@ export const SemesterList: React.FC<IResourceComponentsProps> = () => {
     syncWithLocation: true,
     onSearch: (params) => {
       const filters: CrudFilters = [];
-      const { end_date, start_date, name } = params;
+      const { end_date, start_date, due_date, name } = params;
 
       if (name) {
         filters.push({
@@ -87,6 +89,19 @@ export const SemesterList: React.FC<IResourceComponentsProps> = () => {
         });
       }
 
+      if (due_date) {
+        filters.push({
+          field: "due_date",
+          operator: "gte",
+          value: due_date[0].toISOString(),
+        });
+        filters.push({
+          field: "due_date",
+          operator: "lte",
+          value: due_date[1].toISOString(),
+        });
+      }
+
       return filters;
     },
   });
@@ -112,6 +127,12 @@ export const SemesterList: React.FC<IResourceComponentsProps> = () => {
             <Table.Column
               dataIndex="end_date"
               title={"End Date"}
+              render={(value) => <DateField value={value} />}
+              sorter
+            />
+            <Table.Column
+              dataIndex="due_date"
+              title={"Due Date"}
               render={(value) => <DateField value={value} />}
               sorter
             />
@@ -148,6 +169,9 @@ export const SemesterList: React.FC<IResourceComponentsProps> = () => {
               <RangePicker />
             </Form.Item>
             <Form.Item label="End Date" name="end_date">
+              <RangePicker />
+            </Form.Item>
+            <Form.Item label="Due Date" name="due_date">
               <RangePicker />
             </Form.Item>
             <Form.Item>

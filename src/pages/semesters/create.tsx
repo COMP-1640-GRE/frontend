@@ -21,7 +21,7 @@ export const SemesterCreate: React.FC<IResourceComponentsProps> = () => {
           <Input multiple />
         </Form.Item>
         <Row gutter={16}>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"Faculty"}
               name={["faculty_id"]}
@@ -30,22 +30,32 @@ export const SemesterCreate: React.FC<IResourceComponentsProps> = () => {
               <Select {...facultyQueryResult} />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"Start Date"}
               name={["start_date"]}
               rules={[{ required: true }]}
+              className="w-full"
             >
-              <DatePicker showTime />
+              <DatePicker showTime style={{ width: "100%" }} />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12} md={6}>
             <Form.Item
               label={"End Date"}
               name={["end_date"]}
               rules={[{ required: true }]}
             >
-              <DatePicker showTime />
+              <DatePicker showTime style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col span={12} md={6}>
+            <Form.Item
+              label={"Due Date"}
+              name={["due_date"]}
+              rules={[{ required: true }]}
+            >
+              <DatePicker showTime style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>
