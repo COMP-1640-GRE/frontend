@@ -1,11 +1,27 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { DateField, DeleteButton, List, useTable } from "@refinedev/antd";
+import {
+  DateField,
+  DeleteButton,
+  List,
+  useSelect,
+  useTable,
+} from "@refinedev/antd";
 import {
   BaseRecord,
   CrudFilters,
   IResourceComponentsProps,
 } from "@refinedev/core";
-import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import React from "react";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
@@ -15,7 +31,7 @@ export const ContributionList: React.FC<IResourceComponentsProps> = () => {
     syncWithLocation: true,
     onSearch: (params: any) => {
       const filters: CrudFilters = [];
-      const { title } = params;
+      const { title, ...rest } = params;
 
       if (title) {
         filters.push({
@@ -25,8 +41,28 @@ export const ContributionList: React.FC<IResourceComponentsProps> = () => {
         });
       }
 
+      Object.keys(rest).forEach((key) => {
+        if (rest[key]) {
+          filters.push({
+            field: key,
+            operator: "eq",
+            value: rest[key],
+          });
+        }
+      });
+
       return filters;
     },
+  });
+
+  const { selectProps: facultySelectProps } = useSelect({
+    resource: "faculties",
+    optionLabel: "name",
+  });
+
+  const { selectProps: semesterSelectProps } = useSelect({
+    resource: "semesters",
+    optionLabel: "name",
   });
 
   return (
@@ -93,8 +129,14 @@ export const ContributionList: React.FC<IResourceComponentsProps> = () => {
       <Col md={6} xs={24}>
         <Card>
           <Form layout="vertical" {...searchFormProps}>
-            <Form.Item label="Search" name="name">
-              <Input placeholder="Name" prefix={<SearchOutlined />} />
+            <Form.Item label="Search" name="title">
+              <Input placeholder="title" prefix={<SearchOutlined />} />
+            </Form.Item>
+            <Form.Item label={"Faculty"} name={["semester.faculty.id"]}>
+              <Select {...facultySelectProps} />
+            </Form.Item>
+            <Form.Item label={"Semester"} name={"semester.id"}>
+              <Select {...semesterSelectProps} />
             </Form.Item>
             <Form.Item>
               <Row
