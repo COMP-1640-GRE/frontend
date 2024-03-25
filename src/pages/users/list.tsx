@@ -6,33 +6,20 @@ import {
   List,
   useTable,
 } from "@refinedev/antd";
-import {
-  BaseRecord,
-  CrudFilters,
-  IResourceComponentsProps,
-} from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
 import AccountStatusTag from "../../components/elements/AccountStatusTag";
 import RoleTag from "../../components/elements/RoleTag";
+import { applyFilters } from "../../utils/filters";
 
 export const UserList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
-    onSearch: (params: any) => {
-      const filters: CrudFilters = [];
-      const { username } = params;
-
-      if (username) {
-        filters.push({
-          field: "username",
-          operator: "contains",
-          value: username,
-        });
-      }
-
-      return filters;
-    },
+    onSearch: (params: any) =>
+      applyFilters(params, {
+        contains: ["username"],
+      }),
   });
 
   return (

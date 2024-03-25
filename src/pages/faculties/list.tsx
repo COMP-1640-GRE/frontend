@@ -7,31 +7,18 @@ import {
   ShowButton,
   useTable,
 } from "@refinedev/antd";
-import {
-  BaseRecord,
-  CrudFilters,
-  IResourceComponentsProps,
-} from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
 import React from "react";
+import { applyFilters } from "../../utils/filters";
 
 export const FacultyList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
-    onSearch: (params: any) => {
-      const filters: CrudFilters = [];
-      const { name } = params;
-
-      if (name) {
-        filters.push({
-          field: "name",
-          operator: "contains",
-          value: name,
-        });
-      }
-
-      return filters;
-    },
+    onSearch: (params: any) =>
+      applyFilters(params, {
+        contains: ["name"],
+      }),
   });
 
   return (

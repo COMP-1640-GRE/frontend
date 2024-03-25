@@ -6,11 +6,7 @@ import {
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import {
-  BaseRecord,
-  CrudFilters,
-  IResourceComponentsProps,
-} from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import {
   Button,
   Card,
@@ -25,34 +21,15 @@ import {
 import React from "react";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
+import { applyFilters } from "../../utils/filters";
 
 export const ContributionList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
-    onSearch: (params: any) => {
-      const filters: CrudFilters = [];
-      const { title, ...rest } = params;
-
-      if (title) {
-        filters.push({
-          field: "title",
-          operator: "contains",
-          value: title,
-        });
-      }
-
-      Object.keys(rest).forEach((key) => {
-        if (rest[key]) {
-          filters.push({
-            field: key,
-            operator: "eq",
-            value: rest[key],
-          });
-        }
-      });
-
-      return filters;
-    },
+    onSearch: (params: any) =>
+      applyFilters(params, {
+        contains: ["title"],
+      }),
   });
 
   const { selectProps: facultySelectProps } = useSelect({

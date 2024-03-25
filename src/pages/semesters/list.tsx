@@ -10,7 +10,6 @@ import {
 } from "@refinedev/antd";
 import {
   BaseRecord,
-  CrudFilters,
   HttpError,
   IResourceComponentsProps,
 } from "@refinedev/core";
@@ -27,6 +26,7 @@ import {
 } from "antd";
 import { Dayjs } from "dayjs";
 import React from "react";
+import { applyFilters } from "../../utils/filters";
 const { RangePicker } = DatePicker;
 
 interface ISemester {
@@ -51,59 +51,11 @@ export const SemesterList: React.FC<IResourceComponentsProps> = () => {
     ISemesterFilters
   >({
     syncWithLocation: true,
-    onSearch: (params) => {
-      const filters: CrudFilters = [];
-      const { end_date, start_date, due_date, name } = params;
-
-      if (name) {
-        filters.push({
-          field: "name",
-          operator: "contains",
-          value: name,
-        });
-      }
-
-      if (start_date) {
-        filters.push({
-          field: "start_date",
-          operator: "gte",
-          value: start_date[0].toISOString(),
-        });
-        filters.push({
-          field: "start_date",
-          operator: "lte",
-          value: start_date[1].toISOString(),
-        });
-      }
-
-      if (end_date) {
-        filters.push({
-          field: "end_date",
-          operator: "gte",
-          value: end_date[0].toISOString(),
-        });
-        filters.push({
-          field: "end_date",
-          operator: "lte",
-          value: end_date[1].toISOString(),
-        });
-      }
-
-      if (due_date) {
-        filters.push({
-          field: "due_date",
-          operator: "gte",
-          value: due_date[0].toISOString(),
-        });
-        filters.push({
-          field: "due_date",
-          operator: "lte",
-          value: due_date[1].toISOString(),
-        });
-      }
-
-      return filters;
-    },
+    onSearch: (params) =>
+      applyFilters(params, {
+        contains: ["name"],
+        gte: ["start_date", "end_date", "due_date"],
+      }),
   });
 
   return (
