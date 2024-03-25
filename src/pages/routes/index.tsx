@@ -17,35 +17,9 @@ import { ActivateAccount } from "../activate-account";
 import { UserCreate, UserEdit, UserList, UserShow } from "../users";
 import { ChangePassword } from "../change-password";
 import { UpdateProfile } from "../update-profile";
+import { ContributionList } from "../contributions";
 
 export const authRoutes: RouteProps[] = [
-  // {
-  //   path: "/faculties",
-  //   children: [
-  //     <Route index element={<FacultyList />} />,
-  //     <Route path="create" element={<FacultyCreate />} />,
-  //     <Route path="edit/:id" element={<FacultyEdit />} />,
-  //     <Route path="show/:id" element={<FacultyShow />} />,
-  //   ],
-  // },
-  // {
-  //   path: "/semesters",
-  //   children: [
-  //     <Route index element={<SemesterList />} />,
-  //     <Route path="create" element={<SemesterCreate />} />,
-  //     <Route path="edit/:id" element={<SemesterEdit />} />,
-  //     <Route path="show/:id" element={<SemesterShow />} />,
-  //   ],
-  // },
-  // {
-  //   path: "/users",
-  //   children: [
-  //     <Route index element={<UserList />} />,
-  //     <Route path="create" element={<UserCreate />} />,
-  //     <Route path="edit/:id" element={<UserEdit />} />,
-  //     <Route path="show/:id" element={<UserShow />} />,
-  //   ],
-  // },
   {
     path: "admin",
     children: [
@@ -68,8 +42,9 @@ export const authRoutes: RouteProps[] = [
           <Route path="edit/:id" element={<UserEdit />} />,
           <Route path="show/:id" element={<UserShow />} />,
         </Route>
-        {/* <Route path="faculties">
-        </Route> */}
+        <Route path="contributions">
+          <Route index element={<ContributionList />} />,
+        </Route>
       </Route>,
     ],
   },

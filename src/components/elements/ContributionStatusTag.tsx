@@ -1,14 +1,14 @@
 import { Tag } from "antd";
 import { TagProps } from "antd/lib";
 import { capitalize } from "lodash";
-import { AccountStatus } from "../../enums/user.enum";
+import { ContributionStatus } from "../../enums/contribution.enum";
 import NotSetTag from "./NotsetTag";
 
 interface IProps extends TagProps {
-  status?: AccountStatus;
+  status?: ContributionStatus;
 }
 
-const AccountStatusTag = ({ status, ...props }: IProps) => {
+const ContributionStatusTag = ({ status, ...props }: IProps) => {
   if (!status) return <NotSetTag />;
 
   return (
@@ -18,10 +18,10 @@ const AccountStatusTag = ({ status, ...props }: IProps) => {
   );
 };
 
-export default AccountStatusTag;
+export default ContributionStatusTag;
 
-const TAG_COLOR: Record<AccountStatus, TagProps["color"]> = {
-  active: "green",
-  inactive: "geekblue",
-  locked: "red",
+const TAG_COLOR: Record<ContributionStatus, TagProps["color"]> = {
+  approved: "green",
+  pending: "geekblue",
+  rejected: "red",
 };

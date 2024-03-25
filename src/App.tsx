@@ -46,7 +46,6 @@ function App() {
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
                 useNewQueryKeys: true,
-                // reactQuery: { clientConfig },
               }}
             >
               <Routes>
