@@ -17,11 +17,11 @@ import { ActivateAccount } from "../activate-account";
 import { UserCreate, UserEdit, UserList, UserShow } from "../users";
 import { ChangePassword } from "../change-password";
 import { UpdateProfile } from "../update-profile";
-import { ContributionList } from "../contributions";
+import { ContributionManagementList } from "../contributions";
 
 export const authRoutes: RouteProps[] = [
   {
-    path: "admin",
+    path: "management",
     children: [
       <Route>
         <Route path="faculties">
@@ -43,7 +43,7 @@ export const authRoutes: RouteProps[] = [
           <Route path="show/:id" element={<UserShow />} />,
         </Route>
         <Route path="contributions">
-          <Route index element={<ContributionList />} />,
+          <Route index element={<ContributionManagementList />} />,
         </Route>
       </Route>,
     ],

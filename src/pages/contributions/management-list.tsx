@@ -6,7 +6,13 @@ import {
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
+import {
+  BaseRecord,
+  IResourceComponentsProps,
+  useCustomMutation,
+  useInvalidate,
+  useNotification,
+} from "@refinedev/core";
 import {
   Button,
   Card,
@@ -21,9 +27,15 @@ import {
 import React from "react";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
+import { UserRole } from "../../enums/user.enum";
+import { useIdentity } from "../../hooks/useIdentity";
 import { applyFilters } from "../../utils/filters";
 
-export const ContributionList: React.FC<IResourceComponentsProps> = () => {
+export const ContributionManagementList: React.FC<
+  IResourceComponentsProps
+> = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
   const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
     onSearch: (params: any) =>
@@ -41,12 +53,29 @@ export const ContributionList: React.FC<IResourceComponentsProps> = () => {
     resource: "semesters",
     optionLabel: "name",
   });
+  const { open } = useNotification();
+
+  const { role } = useIdentity();
+  const { mutate, isLoading } = useCustomMutation();
+  const invalidates = useInvalidate();
 
   return (
     <Row gutter={[16, 16]} className="max-md:flex-col-reverse">
       <Col md={18} xs={24}>
         <List>
-          <Table {...tableProps} rowKey="id">
+          <Table
+            {...tableProps}
+            rowKey="id"
+            rowSelection={
+              role === UserRole.FACULTY_MARKETING_COORDINATOR ||
+              role === UserRole.UNIVERSITY_MARKETING_MANAGER
+                ? {
+                    onChange: (selectedRowKeys) =>
+                      setSelectedRowKeys(selectedRowKeys),
+                  }
+                : undefined
+            }
+          >
             <Table.Column dataIndex="id" title="ID" sorter />
             <Table.Column dataIndex="title" title="Title" sorter />
             <Table.Column
@@ -103,7 +132,40 @@ export const ContributionList: React.FC<IResourceComponentsProps> = () => {
           </Table>
         </List>
       </Col>
-      <Col md={6} xs={24}>
+      <Col md={6} xs={24} className="space-y-4">
+        {(role === UserRole.FACULTY_MARKETING_COORDINATOR ||
+          role === UserRole.UNIVERSITY_MARKETING_MANAGER) && (
+          <Button
+            type="primary"
+            loading={isLoading}
+            onClick={() =>
+              mutate(
+                {
+                  method: "patch",
+                  url: `/contributions/${
+                    role === UserRole.FACULTY_MARKETING_COORDINATOR
+                      ? "select-multiple"
+                      : "approve-multiple"
+                  }`,
+                  values: { ids: selectedRowKeys },
+                },
+                {
+                  onSuccess: () => {
+                    open?.({ message: "Success", type: "success" });
+                    invalidates({
+                      invalidates: ["list"],
+                      resource: "contributions",
+                    });
+                  },
+                }
+              )
+            }
+          >
+            {role === UserRole.FACULTY_MARKETING_COORDINATOR
+              ? "Selects"
+              : "Approves"}
+          </Button>
+        )}
         <Card>
           <Form layout="vertical" {...searchFormProps}>
             <Form.Item label="Search" name="title">

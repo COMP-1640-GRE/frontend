@@ -14,8 +14,6 @@ export const accessControlProvider: AccessControlProvider = {
       return { can: true };
     }
 
-    console.log(role, "can not access", resource, action);
-
     return {
       can: false,
       reason: "Unauthorized",
@@ -35,8 +33,16 @@ const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
     faculties: ["list", "create", "edit", "delete", "show"],
     contributions: ["list", "delete"],
   },
-  faculty_marketing_coordinator: {},
-  university_marketing_manager: {},
-  guest: {},
-  student: {},
+  faculty_marketing_coordinator: {
+    contributions: ["list"],
+  },
+  university_marketing_manager: {
+    contributions: ["list"],
+  },
+  guest: {
+    contributions: ["list"],
+  },
+  student: {
+    contributions: ["list", "create"],
+  },
 };

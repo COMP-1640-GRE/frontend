@@ -9,37 +9,37 @@ interface IResourceProps extends ResourceProps {
 export const resources: IResourceProps[] = [
   {
     name: "faculties",
-    list: "/admin/faculties",
-    create: "/admin/faculties/create",
-    edit: "/admin/faculties/edit/:id",
-    show: "/admin/faculties/show/:id",
+    list: "/management/faculties",
+    create: "/management/faculties/create",
+    edit: "/management/faculties/edit/:id",
+    show: "/management/faculties/show/:id",
     meta: {
       canDelete: true,
     },
   },
   {
     name: "semesters",
-    list: "/admin/semesters",
-    create: "/admin/semesters/create",
-    edit: "/admin/semesters/edit/:id",
-    show: "/admin/semesters/show/:id",
+    list: "/management/semesters",
+    create: "/management/semesters/create",
+    edit: "/management/semesters/edit/:id",
+    show: "/management/semesters/show/:id",
     meta: {
       canDelete: true,
     },
   },
   {
     name: "users",
-    list: "/admin/users",
-    create: "/admin/users/create",
-    edit: "/admin/users/edit/:id",
-    show: "/admin/users/show/:id",
+    list: "/management/users",
+    create: "/management/users/create",
+    edit: "/management/users/edit/:id",
+    show: "/management/users/show/:id",
     meta: {
       canDelete: true,
     },
   },
   {
     name: "contributions",
-    list: "/admin/contributions",
+    list: "/management/contributions",
     meta: {
       canDelete: true,
     },
