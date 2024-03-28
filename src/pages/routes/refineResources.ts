@@ -1,9 +1,15 @@
 import { ResourceProps } from "@refinedev/core";
 
-export type Resource = "faculties" | "semesters" | "users" | "contributions";
+export type Resource =
+  | "faculties"
+  | "semesters"
+  | "users"
+  | "contributions"
+  | "contributions_gallery";
 
 interface IResourceProps extends ResourceProps {
   name: Resource;
+  identifier?: Resource;
 }
 
 export const resources: IResourceProps[] = [
@@ -43,5 +49,14 @@ export const resources: IResourceProps[] = [
     meta: {
       canDelete: true,
     },
+  },
+  {
+    name: "contributions",
+    list: "/contributions",
+    create: "/contributions/create",
+    edit: "/contributions/edit/:id",
+    show: "/contributions/:id",
+    identifier: "contributions_gallery",
+    meta: {},
   },
 ];

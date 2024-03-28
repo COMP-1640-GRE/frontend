@@ -4,13 +4,11 @@ import { Resource } from "../pages/routes/refineResources";
 import { authProvider } from "./authProvider";
 
 export const accessControlProvider: AccessControlProvider = {
-  can: async ({ resource, action }) => {
+  can: async ({ resource, action, params }) => {
     const role = (await authProvider.getPermissions?.()) as UserRole;
+    const resourceKey = (params?.resource?.identifier || resource) as Resource;
 
-    if (
-      role &&
-      rolesCan[role]?.[resource as Resource]?.includes(action as Action)
-    ) {
+    if (role && rolesCan[role]?.[resourceKey]?.includes(action as Action)) {
       return { can: true };
     }
 
@@ -24,7 +22,7 @@ export const accessControlProvider: AccessControlProvider = {
   },
 };
 
-type Action = "list" | "create" | "edit" | "delete" | "show";
+type Action = "list" | "create" | "edit" | "delete" | "show" | "clone";
 
 const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
   administrator: {
@@ -34,15 +32,15 @@ const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
     contributions: ["list", "delete"],
   },
   faculty_marketing_coordinator: {
-    contributions: ["list"],
+    contributions: ["list", "show"],
   },
   university_marketing_manager: {
-    contributions: ["list"],
+    contributions: ["list", "show"],
   },
   guest: {
-    contributions: ["list"],
+    contributions_gallery: ["list", "show"],
   },
   student: {
-    contributions: ["list", "create"],
+    contributions_gallery: ["list", "create", "edit", "show"],
   },
 };

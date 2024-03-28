@@ -17,7 +17,13 @@ import { ActivateAccount } from "../activate-account";
 import { UserCreate, UserEdit, UserList, UserShow } from "../users";
 import { ChangePassword } from "../change-password";
 import { UpdateProfile } from "../update-profile";
-import { ContributionManagementList } from "../contributions";
+import {
+  ContributionCreate,
+  ContributionEdit,
+  ContributionGallery,
+  ContributionManagementList,
+} from "../contributions";
+import { ContributionShow } from "../contributions/show";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -46,6 +52,15 @@ export const authRoutes: RouteProps[] = [
           <Route index element={<ContributionManagementList />} />,
         </Route>
       </Route>,
+    ],
+  },
+  {
+    path: "/contributions",
+    children: [
+      <Route index element={<ContributionGallery />} />,
+      <Route path="edit/:id" element={<ContributionEdit />} />,
+      <Route path=":id" element={<ContributionShow />} />,
+      <Route path="create" element={<ContributionCreate />} />,
     ],
   },
   {

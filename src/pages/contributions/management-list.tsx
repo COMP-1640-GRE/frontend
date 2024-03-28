@@ -65,6 +65,11 @@ export const ContributionManagementList: React.FC<
         <List>
           <Table
             {...tableProps}
+            pagination={{
+              ...tableProps.pagination,
+              pageSizeOptions: [5, 10, 20, 50, 100],
+              showSizeChanger: true,
+            }}
             rowKey="id"
             rowSelection={
               role === UserRole.FACULTY_MARKETING_COORDINATOR ||
