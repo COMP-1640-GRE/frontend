@@ -57,6 +57,6 @@ export const resources: IResourceProps[] = [
     edit: "/contributions/edit/:id",
     show: "/contributions/:id",
     identifier: "contributions_gallery",
-    meta: {},
+    meta: { canDelete: true },
   },
 ];

@@ -13,7 +13,11 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
   const record = data?.data;
 
   return (
-    <Show isLoading={isLoading} canEdit={id === record?.student?.id}>
+    <Show
+      isLoading={isLoading}
+      canEdit={id === record?.student?.id}
+      canDelete={false}
+    >
       <Title level={5}>{"ID"}</Title>
       <NumberField value={record?.id ?? ""} />
       <Title level={5}>{"Name"}</Title>

@@ -6,8 +6,11 @@ import React, { useState } from "react";
 import { useIdentity } from "../../hooks/useIdentity";
 
 export const ContributionEdit: React.FC<IResourceComponentsProps> = () => {
-  const { formProps, saveButtonProps, formLoading } = useForm({});
-  const { faculty } = useIdentity();
+  const { formProps, saveButtonProps, formLoading, queryResult } = useForm({});
+
+  const record = queryResult?.data?.data;
+
+  const { faculty, id } = useIdentity();
   const [date] = useState(new Date().toISOString());
   const [to_delete, setToDelete] = useState<string[]>([]);
   const { selectProps: semesterSelectProps } = useSelect({
@@ -34,7 +37,11 @@ export const ContributionEdit: React.FC<IResourceComponentsProps> = () => {
   console.log(to_delete);
 
   return (
-    <Edit saveButtonProps={saveButtonProps} isLoading={formLoading}>
+    <Edit
+      saveButtonProps={saveButtonProps}
+      isLoading={formLoading}
+      canDelete={id === record?.student?.id}
+    >
       <Form
         {...formProps}
         layout="vertical"

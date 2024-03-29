@@ -41,6 +41,6 @@ const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
     contributions_gallery: ["list", "show"],
   },
   student: {
-    contributions_gallery: ["list", "create", "edit", "show"],
+    contributions_gallery: ["list", "create", "edit", "show", "delete"],
   },
 };
