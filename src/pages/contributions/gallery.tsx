@@ -12,6 +12,7 @@ import {
   Card,
   Col,
   Form,
+  Image,
   Input,
   Pagination,
   Row,
@@ -23,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { applyFilters } from "../../utils/filters";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps, searchFormProps, setFilters } = useTable({
+  const { tableProps, searchFormProps, setFilters, setCurrent } = useTable({
     syncWithLocation: true,
     onSearch: (params: any) =>
       applyFilters(params, {
@@ -45,62 +46,74 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
   // const { mutate, isLoading } = useCustomMutation();
   // const invalidates = useInvalidate();
   const navigate = useNavigate();
+
   return (
     <Row gutter={[16, 16]} className="max-md:flex-col-reverse">
       <Col xs={24} md={18}>
         <List title="Contributions">
           <Row gutter={[8, 8]}>
-            {tableProps.dataSource?.map((item) => (
-              <Col xs={24} md={12} xl={8} xxl={6} key={item.id}>
-                <Card
-                  onClick={() => navigate(`${item.id}`)}
-                  className="cursor-pointer"
-                  cover={
-                    <img
-                      alt="example"
-                      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                    />
-                  }
-                  actions={[
-                    <LikeOutlined key="like" />,
-                    <DislikeOutlined key="dislike" />,
+            {tableProps.dataSource?.map((item) => {
+              const student = item["student"];
+              const attachments = item["attachments"];
+              let image = "";
 
-                    <CopyToClipboard
-                      text={window.location.href}
-                      onCopy={() => {
-                        open?.({ message: "Link Copied", type: "success" });
-                      }}
-                    >
-                      <ShareAltOutlined
-                        key="share"
-                        onClick={(e) => e.stopPropagation()}
+              if (Array.isArray(attachments)) {
+                image = attachments.find(
+                  (attachment) => attachment.type === "image"
+                )?.path;
+              }
+
+              return (
+                <Col xs={24} md={12} xl={8} xxl={6} key={item.id}>
+                  <Card
+                    onClick={() => navigate(`${item.id}`)}
+                    className="cursor-pointer"
+                    cover={
+                      <Image
+                        preview={false}
+                        src={image || "https://placehold.co/400?text=No+Image"}
+                        className="aspect-square object-contain"
                       />
-                    </CopyToClipboard>,
-                  ]}
-                >
-                  <Card.Meta
-                    avatar={
-                      <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
                     }
-                    title={item["title"]}
-                    description={
-                      <>
-                        By {item["student"].first_name}{" "}
-                        {item["student"].last_name}
-                        <br />
-                        {item["description"]}
-                      </>
-                    }
-                  />
-                </Card>
-              </Col>
-            ))}
+                    actions={[
+                      <LikeOutlined key="like" />,
+                      <DislikeOutlined key="dislike" />,
+
+                      <CopyToClipboard
+                        text={window.location.href}
+                        onCopy={() => {
+                          open?.({ message: "Link Copied", type: "success" });
+                        }}
+                      >
+                        <ShareAltOutlined
+                          key="share"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </CopyToClipboard>,
+                    ]}
+                  >
+                    <Card.Meta
+                      avatar={<Avatar src={student.avatar} />}
+                      title={item["title"]}
+                      description={
+                        <>
+                          By {student.first_name} {student.last_name}
+                          <br />
+                          {item["description"]}
+                        </>
+                      }
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
           </Row>
           <div>
             <Pagination
               {...tableProps.pagination}
               showSizeChanger
               className="mt-4"
+              onChange={(page) => setCurrent(page)}
             />
           </div>
         </List>
