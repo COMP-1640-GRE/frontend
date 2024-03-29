@@ -42,6 +42,7 @@ export const ContributionCreate: React.FC<IResourceComponentsProps> = () => {
 
           const formData = new FormData();
           Object.entries<string>(rest).forEach(([key, value]) => {
+            if (!value) return;
             formData.append(key, value);
           });
 
