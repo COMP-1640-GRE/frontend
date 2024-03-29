@@ -10,9 +10,9 @@ import {
   theme,
 } from "antd";
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { ColorModeContext } from "../../contexts/color-mode";
 import { Identity } from "../../services/types";
-import { Link } from "react-router-dom";
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -70,10 +70,10 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
           }}
         >
           <Space style={{ marginLeft: "8px" }} size="middle">
-            <Text strong>{user?.first_name}</Text>
-            <Avatar
-            //  src={user?.avatar} alt={user?.name}
-            />
+            <Text strong>
+              {user?.first_name} {user?.last_name}
+            </Text>
+            <Avatar src={user?.avatar} alt={user?.first_name} />
           </Space>
         </Dropdown>
       </Space>

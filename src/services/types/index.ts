@@ -11,6 +11,7 @@ export interface Identity {
   created_at: string;
   updated_at: string;
   faculty: Faculty;
+  avatar?: string;
 }
 
 export interface Faculty {
