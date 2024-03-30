@@ -1,3 +1,4 @@
+import { PlusOutlined } from "@ant-design/icons";
 import { ThemedTitleV2 } from "@refinedev/antd";
 import { useCustomMutation, useTranslate } from "@refinedev/core";
 import {
@@ -9,10 +10,13 @@ import {
   Layout,
   Row,
   Typography,
+  Upload,
   theme,
 } from "antd";
-import { CSSProperties } from "react";
+import { UploadFileStatus } from "antd/lib/upload/interface";
+import { CSSProperties, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../../services/apis";
 
 type UpdateForm = {
   email: string;
@@ -25,6 +29,8 @@ export const UpdateProfile = () => {
   const [form] = Form.useForm<UpdateForm>();
   const translate = useTranslate();
   const navigate = useNavigate();
+
+  const [uploadStatus, setUploadStatus] = useState<UploadFileStatus>();
 
   const { mutate, isLoading } = useCustomMutation();
 
@@ -59,93 +65,6 @@ export const UpdateProfile = () => {
     </Typography.Title>
   );
 
-  const CardContent = (
-    <Card
-      title={CardTitle}
-      headStyle={headStyles}
-      bodyStyle={bodyStyles}
-      style={{
-        ...containerStyles,
-        backgroundColor: token.colorBgElevated,
-      }}
-    >
-      <Form<UpdateForm>
-        layout="vertical"
-        form={form}
-        onFinish={(values) => update(values)}
-        requiredMark={false}
-        initialValues={{
-          remember: false,
-        }}
-      >
-        <Row gutter={[6, 6]}>
-          <Col span={12}>
-            <Form.Item
-              name="first_name"
-              label={translate(
-                "pages.activate.fields.first_name",
-                "First name"
-              )}
-              rules={[{ required: true }]}
-            >
-              <Input
-                size="large"
-                placeholder={translate(
-                  "pages.activate.fields.first_name",
-                  "First name"
-                )}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="last_name"
-              label={translate("pages.activate.fields.last_name", "Last name")}
-              rules={[{ required: true }]}
-            >
-              <Input
-                size="large"
-                placeholder={translate(
-                  "pages.activate.fields.last_name",
-                  "Last name"
-                )}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item
-          name="email"
-          label={translate("pages.activate.fields.email", "Email")}
-          rules={[{ required: true }]}
-        >
-          <Input
-            size="large"
-            placeholder={translate("pages.activate.fields.email", "Email")}
-          />
-        </Form.Item>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "24px",
-          }}
-        ></div>
-
-        <Form.Item>
-          <Button
-            type="primary"
-            size="large"
-            htmlType="submit"
-            loading={isLoading}
-            block
-          >
-            {translate("pages.activate.signin", "Update")}
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
-  );
-
   return (
     <Layout style={layoutStyles}>
       <Row
@@ -159,7 +78,109 @@ export const UpdateProfile = () => {
       >
         <Col xs={22}>
           {PageTitle}
-          {CardContent}
+          <Card
+            title={CardTitle}
+            headStyle={headStyles}
+            bodyStyle={bodyStyles}
+            style={{
+              ...containerStyles,
+              backgroundColor: token.colorBgElevated,
+            }}
+          >
+            <Upload.Dragger
+              listType="picture-circle"
+              action={`${baseURL}/users/avatar`}
+              withCredentials
+              maxCount={1}
+              onChange={({ file }) => setUploadStatus(file.status)}
+              disabled={uploadStatus === "done"}
+            >
+              <button style={{ border: 0, background: "none" }} type="button">
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload Avatar</div>
+              </button>
+            </Upload.Dragger>
+            <Form<UpdateForm>
+              layout="vertical"
+              form={form}
+              onFinish={(values) => update(values)}
+              requiredMark={false}
+              initialValues={{
+                remember: false,
+              }}
+            >
+              <Row gutter={[6, 6]}>
+                <Col span={12}>
+                  <Form.Item
+                    name="first_name"
+                    label={translate(
+                      "pages.activate.fields.first_name",
+                      "First name"
+                    )}
+                    rules={[{ required: true }]}
+                  >
+                    <Input
+                      size="large"
+                      placeholder={translate(
+                        "pages.activate.fields.first_name",
+                        "First name"
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="last_name"
+                    label={translate(
+                      "pages.activate.fields.last_name",
+                      "Last name"
+                    )}
+                    rules={[{ required: true }]}
+                  >
+                    <Input
+                      size="large"
+                      placeholder={translate(
+                        "pages.activate.fields.last_name",
+                        "Last name"
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Form.Item
+                name="email"
+                label={translate("pages.activate.fields.email", "Email")}
+                rules={[{ required: true }]}
+              >
+                <Input
+                  size="large"
+                  placeholder={translate(
+                    "pages.activate.fields.email",
+                    "Email"
+                  )}
+                />
+              </Form.Item>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "24px",
+                }}
+              ></div>
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  size="large"
+                  htmlType="submit"
+                  loading={isLoading}
+                  block
+                >
+                  {translate("pages.activate.signin", "Update")}
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
         </Col>
       </Row>
     </Layout>

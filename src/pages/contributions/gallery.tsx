@@ -22,6 +22,7 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useNavigate } from "react-router-dom";
 import { applyFilters } from "../../utils/filters";
+import { truncate } from "lodash";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps, setFilters, setCurrent } = useTable({
@@ -99,7 +100,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                         <>
                           By {student.first_name} {student.last_name}
                           <br />
-                          {item["description"]}
+                          {truncate(item["description"])}
                         </>
                       }
                     />

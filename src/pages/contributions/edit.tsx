@@ -34,7 +34,6 @@ export const ContributionEdit: React.FC<IResourceComponentsProps> = () => {
       },
     ],
   });
-  console.log(to_delete);
 
   return (
     <Edit
@@ -54,9 +53,7 @@ export const ContributionEdit: React.FC<IResourceComponentsProps> = () => {
             formData.append(key, value);
           });
 
-          if (to_delete.length > 0) {
-            formData.append("to_delete", JSON.stringify(to_delete));
-          }
+          formData.append("to_delete", JSON.stringify(to_delete));
 
           attachments.forEach((attachment: any) => {
             if (!attachment) return;
