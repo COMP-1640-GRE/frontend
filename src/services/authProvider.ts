@@ -11,9 +11,11 @@ export const authProvider: AuthBindings = {
     try {
       if (username && password) {
         let redirectTo = "/";
+        let message = "Some thing went wrong";
         const res = await api
           .post("/auth/login", { username, password, remember })
           .catch(({ response }: AxiosError) => {
+            console.log(response);
             if (response?.status === 428) {
               localStorage.setItem(
                 LocalStorageKey.USER,
@@ -21,6 +23,7 @@ export const authProvider: AuthBindings = {
               );
               redirectTo = "/activate-account";
             }
+            message = (response?.data as any)?.["message"];
           });
 
         if (res) {
@@ -39,12 +42,23 @@ export const authProvider: AuthBindings = {
           localStorage.setItem(LocalStorageKey.REMEMBER, "true");
         }
 
+        if (redirectTo === "/activate-account") {
+          return {
+            success: false,
+            redirectTo,
+            error: {
+              name: "Account not activated",
+              message: "You need to activate your account first",
+            },
+          };
+        }
+
         return {
           success: false,
           redirectTo,
           error: {
-            name: "Account not activated",
-            message: "You need to activate your account first",
+            name: "Login Error",
+            message,
           },
         };
       }
