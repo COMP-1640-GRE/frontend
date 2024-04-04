@@ -1,11 +1,18 @@
 import {
+  DislikeFilled,
   DislikeOutlined,
+  LikeFilled,
   LikeOutlined,
   SearchOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
 import { List, useSelect, useTable } from "@refinedev/antd";
-import { IResourceComponentsProps, useNotification } from "@refinedev/core";
+import {
+  IResourceComponentsProps,
+  useCustomMutation,
+  useInvalidate,
+  useNotification,
+} from "@refinedev/core";
 import {
   Avatar,
   Button,
@@ -18,11 +25,11 @@ import {
   Row,
   Select,
 } from "antd";
+import { truncate } from "lodash";
 import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useNavigate } from "react-router-dom";
 import { applyFilters } from "../../utils/filters";
-import { truncate } from "lodash";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
   const {
@@ -60,10 +67,16 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
     optionLabel: "name",
   });
   const { open } = useNotification();
-  // const { role } = useIdentity();
-  // const { mutate, isLoading } = useCustomMutation();
-  // const invalidates = useInvalidate();
+  const { mutate } = useCustomMutation();
+  const invalidate = useInvalidate();
   const navigate = useNavigate();
+  const invalidates = () =>
+    invalidate({
+      resource: "contributions",
+      invalidates: ["all"],
+    });
+
+  const [order, setOrder] = React.useState<"asc" | "desc">("asc");
 
   return (
     <Row gutter={[16, 16]} className="max-md:flex-col-reverse">
@@ -80,22 +93,72 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                   (attachment) => attachment.type === "image"
                 )?.path;
               }
+              const { like, dislike, reacted } = item.reaction;
 
               return (
                 <Col xs={24} md={12} xl={8} xxl={6} key={item.id}>
                   <Card
-                    onClick={() => navigate(`${item.id}`)}
-                    className="cursor-pointer"
                     cover={
                       <Image
                         preview={false}
                         src={image || "https://placehold.co/400?text=No+Image"}
-                        className="aspect-square object-contain"
+                        className="aspect-square object-contain cursor-pointer"
+                        onClick={() => navigate(`${item.id}`)}
                       />
                     }
                     actions={[
-                      <LikeOutlined key="like" />,
-                      <DislikeOutlined key="dislike" />,
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          mutate(
+                            {
+                              method: "post",
+                              url: `contributions/${item.id}/reaction`,
+                              values: { type: "like" },
+                              successNotification: {
+                                message: "Reacted",
+                                type: "success",
+                              },
+                            },
+                            {
+                              onSuccess: invalidates,
+                            }
+                          );
+                        }}
+                      >
+                        {like}{" "}
+                        {reacted === "like" ? (
+                          <LikeFilled key="like" />
+                        ) : (
+                          <LikeOutlined key="like" />
+                        )}
+                      </span>,
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          mutate(
+                            {
+                              method: "post",
+                              url: `contributions/${item.id}/reaction`,
+                              values: { type: "dislike" },
+                              successNotification: {
+                                message: "Reacted",
+                                type: "success",
+                              },
+                            },
+                            {
+                              onSuccess: invalidates,
+                            }
+                          );
+                        }}
+                      >
+                        {dislike}{" "}
+                        {reacted === "dislike" ? (
+                          <DislikeFilled key="dislike" />
+                        ) : (
+                          <DislikeOutlined key="dislike" />
+                        )}
+                      </span>,
 
                       <CopyToClipboard
                         text={window.location.href}
@@ -173,19 +236,38 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
           </Form>
         </Card>
         <Card>
-          {sorters.map((item) => (
-            <div key={item.field} className="flex justify-between items-center">
-              <span>{item.field}</span>
-              <span>{item.order}</span>
-            </div>
-          ))}
-          {tableProps.dataSource?.[0] && (
-            <Form>
-              <Form.Item>
-                <Select mode="multiple" allowClear options={SORTABLE} />
-              </Form.Item>
-            </Form>
-          )}
+          <Form>
+            <Form.Item>
+              <Select
+                allowClear
+                className="w-full"
+                options={SORTABLE}
+                onChange={(value) =>
+                  setSorters(value ? [{ field: value, order }] : [])
+                }
+              />
+            </Form.Item>
+            <Form.Item>
+              <Select
+                className="w-full"
+                options={[
+                  {
+                    value: "asc",
+                    label: "Ascending",
+                  },
+                  {
+                    value: "desc",
+                    label: "Descending",
+                  },
+                ]}
+                value={order}
+                onChange={(value) => {
+                  setOrder(value);
+                  setSorters(sorters.map((s) => ({ ...s, order: value })));
+                }}
+              />
+            </Form.Item>
+          </Form>
         </Card>
       </Col>
     </Row>
@@ -196,5 +278,17 @@ const SORTABLE = [
   {
     value: "id",
     label: "ID",
+  },
+  {
+    value: "like",
+    label: "Like",
+  },
+  {
+    value: "dislike",
+    label: "Dislike",
+  },
+  {
+    value: "created_at",
+    label: "Date",
   },
 ];
