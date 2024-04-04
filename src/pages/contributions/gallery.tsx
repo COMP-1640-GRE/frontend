@@ -25,14 +25,30 @@ import { applyFilters } from "../../utils/filters";
 import { truncate } from "lodash";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps, searchFormProps, setFilters, setCurrent, setPageSize } =
-    useTable({
-      syncWithLocation: true,
-      onSearch: (params: any) =>
-        applyFilters(params, {
-          contains: ["title"],
-        }),
-    });
+  const {
+    tableProps,
+    searchFormProps,
+    sorters,
+    setFilters,
+    setSorters,
+    setCurrent,
+    setPageSize,
+  } = useTable({
+    syncWithLocation: true,
+    filters: {
+      permanent: [
+        {
+          field: "status",
+          operator: "eq",
+          value: "approved",
+        },
+      ],
+    },
+    onSearch: (params: any) =>
+      applyFilters(params, {
+        contains: ["title"],
+      }),
+  });
 
   const { selectProps: facultySelectProps } = useSelect({
     resource: "faculties",
@@ -156,7 +172,29 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
             </Form.Item>
           </Form>
         </Card>
+        <Card>
+          {sorters.map((item) => (
+            <div key={item.field} className="flex justify-between items-center">
+              <span>{item.field}</span>
+              <span>{item.order}</span>
+            </div>
+          ))}
+          {tableProps.dataSource?.[0] && (
+            <Form>
+              <Form.Item>
+                <Select mode="multiple" allowClear options={SORTABLE} />
+              </Form.Item>
+            </Form>
+          )}
+        </Card>
       </Col>
     </Row>
   );
 };
+
+const SORTABLE = [
+  {
+    value: "id",
+    label: "ID",
+  },
+];

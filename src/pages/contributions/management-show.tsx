@@ -23,7 +23,10 @@ import ContributionStatusTag from "../../components/elements/ContributionStatusT
 import ContributionTag from "../../components/elements/ContributionTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
 import ReviewEditor from "../../components/elements/ReviewEditor";
-import { ContributionEvaluate } from "../../enums/contribution.enum";
+import {
+  ContributionEvaluate,
+  ContributionStatus,
+} from "../../enums/contribution.enum";
 import { UserRole } from "../../enums/user.enum";
 import { useIdentity } from "../../hooks/useIdentity";
 import dayjs from "../../libs/dayjs";
@@ -66,10 +69,10 @@ export const ContributionManagementShow: React.FC<
                   mutate(
                     {
                       method: "patch",
-                      url: `/contributions/${record?.id}/approve`,
+                      url: `/contributions/${record?.id}/select`,
                       values: {},
                       successNotification: {
-                        message: "Contribution approved",
+                        message: "Contribution Selected",
                         type: "success",
                       },
                     },
@@ -79,33 +82,11 @@ export const ContributionManagementShow: React.FC<
                   )
                 }
               >
-                Toggle Approve
+                Toggle select
               </Button>
             )}
             {role === UserRole.COORDINATOR && (
               <>
-                <Button
-                  type="primary"
-                  loading={isLoadingMutation}
-                  onClick={() =>
-                    mutate(
-                      {
-                        method: "patch",
-                        url: `/contributions/${record?.id}/select`,
-                        values: {},
-                        successNotification: {
-                          message: "Contribution selected",
-                          type: "success",
-                        },
-                      },
-                      {
-                        onSuccess: invalidates,
-                      }
-                    )
-                  }
-                >
-                  Toggle Select
-                </Button>
                 <Select
                   maxCount={1}
                   loading={isLoadingMutation}
@@ -129,6 +110,31 @@ export const ContributionManagementShow: React.FC<
                   options={Object.values(ContributionEvaluate).map((value) => ({
                     value,
                     label: <EvaluateTag evaluation={value} />,
+                  }))}
+                />
+                <Select
+                  maxCount={1}
+                  loading={isLoadingMutation}
+                  value={record?.status}
+                  onChange={(status) =>
+                    mutate(
+                      {
+                        method: "patch",
+                        url: `/contributions/${record?.id}/status`,
+                        values: { status },
+                        successNotification: {
+                          message: `Contribution status changed to ${status}`,
+                          type: "success",
+                        },
+                      },
+                      {
+                        onSuccess: invalidates,
+                      }
+                    )
+                  }
+                  options={Object.values(ContributionStatus).map((value) => ({
+                    value,
+                    label: <ContributionStatusTag status={value} />,
                   }))}
                 />
               </>

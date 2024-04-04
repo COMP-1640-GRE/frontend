@@ -2,22 +2,17 @@ import { Tag } from "antd";
 import { TagProps } from "antd/lib";
 
 interface IProps extends TagProps {
-  contribution?: { selected: boolean; approved: boolean };
+  contribution?: { selected: boolean };
 }
 
 const ContributionTag = ({ contribution, ...props }: IProps) => {
   if (!contribution) return <></>;
-  const { selected, approved } = contribution;
+  const { selected } = contribution;
   return (
     <>
       {selected && (
         <Tag color="lime" {...props}>
           Selected
-        </Tag>
-      )}
-      {approved && (
-        <Tag color="cyan" {...props}>
-          Approved
         </Tag>
       )}
     </>

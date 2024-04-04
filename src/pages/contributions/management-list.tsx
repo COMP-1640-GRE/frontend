@@ -11,8 +11,6 @@ import {
   BaseRecord,
   IResourceComponentsProps,
   useCustomMutation,
-  useInvalidate,
-  useNotification,
 } from "@refinedev/core";
 import {
   Button,
@@ -68,9 +66,7 @@ export const ContributionManagementList: React.FC<
     optionLabel: "name",
   });
 
-  const { open } = useNotification();
   const { mutate, isLoading } = useCustomMutation();
-  const invalidates = useInvalidate();
 
   return (
     <Row gutter={[16, 16]} className="max-md:flex-col-reverse">
@@ -85,7 +81,7 @@ export const ContributionManagementList: React.FC<
             }}
             rowKey="id"
             rowSelection={
-              role === UserRole.COORDINATOR || role === UserRole.MANAGER
+              role === UserRole.MANAGER
                 ? {
                     onChange: (selectedRowKeys) =>
                       setSelectedRowKeys(selectedRowKeys),
@@ -152,58 +148,63 @@ export const ContributionManagementList: React.FC<
       </Col>
       <Col md={6} xs={24} className="space-y-4">
         {role === UserRole.MANAGER && (
-          <Button
-            type="primary"
-            loading={isLoading}
-            disabled={selectedRowKeys.length === 0}
-            onClick={() =>
-              mutate(
-                {
-                  method: "patch",
-                  url: `/contributions/approve-multiple`,
-                  values: { ids: selectedRowKeys },
-                },
-                {
-                  onSuccess: () => {
-                    open?.({ message: "Success", type: "success" });
-                    invalidates({
-                      invalidates: ["list"],
-                      resource: "contributions",
-                    });
-                  },
-                }
-              )
-            }
-          >
-            Approves
-          </Button>
-        )}
-        {role === UserRole.COORDINATOR && (
-          <Button
-            type="primary"
-            loading={isLoading}
-            disabled={selectedRowKeys.length === 0}
-            onClick={() =>
-              mutate(
-                {
+          <Space>
+            <Button
+              type="primary"
+              loading={isLoading}
+              disabled={selectedRowKeys.length === 0}
+              onClick={() =>
+                mutate({
                   method: "patch",
                   url: `/contributions/select-multiple`,
                   values: { ids: selectedRowKeys },
-                },
-                {
-                  onSuccess: () => {
-                    open?.({ message: "Success", type: "success" });
-                    invalidates({
-                      invalidates: ["list"],
-                      resource: "contributions",
-                    });
+                  successNotification: {
+                    message: "Selected",
+                    type: "success",
                   },
-                }
-              )
-            }
-          >
-            Selects
-          </Button>
+                })
+              }
+            >
+              Selects
+            </Button>
+            <Button
+              type="primary"
+              loading={isLoading}
+              disabled={selectedRowKeys.length === 0}
+              onClick={() =>
+                mutate(
+                  {
+                    method: "post",
+                    url: `/contributions/download`,
+                    values: { ids: selectedRowKeys },
+                    successNotification: {
+                      message: "Downloaded",
+                      type: "success",
+                    },
+                  },
+                  {
+                    onSuccess: (res) => {
+                      const blob = new Blob(
+                        [new Uint8Array(res.data.zip.data)],
+                        {
+                          type: "application/zip",
+                        }
+                      );
+
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "contributions.zip";
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    },
+                  }
+                )
+              }
+            >
+              Downloads
+            </Button>
+          </Space>
         )}
         <Card>
           <Form layout="vertical" {...searchFormProps}>
