@@ -85,7 +85,14 @@ export const authProvider: AuthBindings = {
   check: async () =>
     api
       .get("/auth/introspect")
-      .then(() => ({ authenticated: true }))
+      .then((response) => {
+        localStorage.setItem(
+          LocalStorageKey.USER,
+          JSON.stringify(response.data)
+        );
+
+        return { authenticated: true };
+      })
       .catch(() => ({
         authenticated: false,
         redirectTo: "/login",

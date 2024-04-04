@@ -1,15 +1,11 @@
-import {
-  DateField,
-  EmailField,
-  NumberField,
-  Show,
-  TextField,
-} from "@refinedev/antd";
+import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import { IResourceComponentsProps, useShow } from "@refinedev/core";
 import { Avatar, Card, Carousel, Col, Row, Typography } from "antd";
 import React from "react";
-import { useIdentity } from "../../hooks/useIdentity";
 import EvaluateTag from "../../components/elements/EvaluateTag";
+import { useIdentity } from "../../hooks/useIdentity";
+import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
+import ContributionTag from "../../components/elements/ContributionTag";
 
 const { Title } = Typography;
 
@@ -18,7 +14,6 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
   const { data, isLoading } = queryResult;
   const { id } = useIdentity();
   const record = data?.data;
-  console.log(record?.attachments);
 
   return (
     <Show
@@ -29,7 +24,11 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
     >
       <div className="flex flex-col md:flex-row pb-10 items-start justify-between gap-4">
         <div>
-          <EvaluateTag evaluation={record?.evaluate} />
+          <ContributionStatusTag status={record?.status} />
+          {record?.evaluation && (
+            <EvaluateTag evaluation={record?.evaluation} />
+          )}
+          <ContributionTag contribution={record as any} />
           <Title level={3}>{record?.title}</Title>
           <DateField
             value={record?.created_at}

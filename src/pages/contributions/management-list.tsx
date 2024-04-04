@@ -3,6 +3,7 @@ import {
   DateField,
   DeleteButton,
   List,
+  ShowButton,
   useSelect,
   useTable,
 } from "@refinedev/antd";
@@ -35,9 +36,22 @@ export const ContributionManagementList: React.FC<
   IResourceComponentsProps
 > = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+  const { role, faculty } = useIdentity();
 
   const { tableProps, searchFormProps, setFilters } = useTable({
     syncWithLocation: true,
+    filters: {
+      permanent:
+        role === UserRole.COORDINATOR
+          ? [
+              {
+                field: "faculty.id",
+                operator: "eq",
+                value: faculty?.id,
+              },
+            ]
+          : [],
+    },
     onSearch: (params: any) =>
       applyFilters(params, {
         contains: ["title"],
@@ -53,9 +67,8 @@ export const ContributionManagementList: React.FC<
     resource: "semesters",
     optionLabel: "name",
   });
-  const { open } = useNotification();
 
-  const { role } = useIdentity();
+  const { open } = useNotification();
   const { mutate, isLoading } = useCustomMutation();
   const invalidates = useInvalidate();
 
@@ -72,8 +85,7 @@ export const ContributionManagementList: React.FC<
             }}
             rowKey="id"
             rowSelection={
-              role === UserRole.FACULTY_MARKETING_COORDINATOR ||
-              role === UserRole.UNIVERSITY_MARKETING_MANAGER
+              role === UserRole.COORDINATOR || role === UserRole.MANAGER
                 ? {
                     onChange: (selectedRowKeys) =>
                       setSelectedRowKeys(selectedRowKeys),
@@ -131,6 +143,7 @@ export const ContributionManagementList: React.FC<
                     size="small"
                     recordItemId={record.id}
                   />
+                  <ShowButton hideText size="small" recordItemId={record.id} />
                 </Space>
               )}
             />
@@ -138,20 +151,16 @@ export const ContributionManagementList: React.FC<
         </List>
       </Col>
       <Col md={6} xs={24} className="space-y-4">
-        {(role === UserRole.FACULTY_MARKETING_COORDINATOR ||
-          role === UserRole.UNIVERSITY_MARKETING_MANAGER) && (
+        {role === UserRole.MANAGER && (
           <Button
             type="primary"
             loading={isLoading}
+            disabled={selectedRowKeys.length === 0}
             onClick={() =>
               mutate(
                 {
                   method: "patch",
-                  url: `/contributions/${
-                    role === UserRole.FACULTY_MARKETING_COORDINATOR
-                      ? "select-multiple"
-                      : "approve-multiple"
-                  }`,
+                  url: `/contributions/approve-multiple`,
                   values: { ids: selectedRowKeys },
                 },
                 {
@@ -166,9 +175,34 @@ export const ContributionManagementList: React.FC<
               )
             }
           >
-            {role === UserRole.FACULTY_MARKETING_COORDINATOR
-              ? "Selects"
-              : "Approves"}
+            Approves
+          </Button>
+        )}
+        {role === UserRole.COORDINATOR && (
+          <Button
+            type="primary"
+            loading={isLoading}
+            disabled={selectedRowKeys.length === 0}
+            onClick={() =>
+              mutate(
+                {
+                  method: "patch",
+                  url: `/contributions/select-multiple`,
+                  values: { ids: selectedRowKeys },
+                },
+                {
+                  onSuccess: () => {
+                    open?.({ message: "Success", type: "success" });
+                    invalidates({
+                      invalidates: ["list"],
+                      resource: "contributions",
+                    });
+                  },
+                }
+              )
+            }
+          >
+            Selects
           </Button>
         )}
         <Card>

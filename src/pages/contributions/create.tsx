@@ -1,12 +1,17 @@
 import { InboxOutlined } from "@ant-design/icons";
 import { Create, useForm, useSelect } from "@refinedev/antd";
 import { IResourceComponentsProps } from "@refinedev/core";
-import { Form, Input, Select, Switch, Upload } from "antd";
+import { Form, Input, Select, Switch, Upload, Checkbox, Modal } from "antd";
 import React, { useState } from "react";
 import { useIdentity } from "../../hooks/useIdentity";
+import TermsAndConditions from "../../components/elements/TermsAndConditions";
 
 export const ContributionCreate: React.FC<IResourceComponentsProps> = () => {
-  const { formProps, saveButtonProps } = useForm({});
+  const {
+    formProps,
+    saveButtonProps,
+    form: { setFieldValue },
+  } = useForm({});
   const { faculty } = useIdentity();
   const [date] = useState(new Date().toISOString());
 
@@ -89,6 +94,36 @@ export const ContributionCreate: React.FC<IResourceComponentsProps> = () => {
             </p>
             <p className="ant-upload-hint"></p>
           </Upload.Dragger>
+        </Form.Item>
+        <Form.Item
+          name={"agree"}
+          valuePropName="checked"
+          rules={[
+            {
+              required: true,
+              message: "Please agree to the terms and conditions",
+            },
+          ]}
+        >
+          <Checkbox>
+            I agree to the{" "}
+            <span
+              className="cursor-pointer text-blue-500"
+              onClick={(e) => {
+                e.preventDefault();
+
+                return Modal.confirm({
+                  title: "Terms and Conditions",
+                  content: <TermsAndConditions />,
+                  width: "90%",
+                  onOk: () => setFieldValue("agree", true),
+                  onCancel: () => setFieldValue("agree", false),
+                });
+              }}
+            >
+              terms and conditions
+            </span>
+          </Checkbox>
         </Form.Item>
       </Form>
     </Create>
