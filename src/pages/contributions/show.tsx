@@ -1,11 +1,12 @@
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import { IResourceComponentsProps, useShow } from "@refinedev/core";
-import { Avatar, Card, Carousel, Col, Row, Typography } from "antd";
+import { Avatar, Button, Card, Carousel, Col, Row, Typography } from "antd";
 import React from "react";
 import EvaluateTag from "../../components/elements/EvaluateTag";
 import { useIdentity } from "../../hooks/useIdentity";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import ContributionTag from "../../components/elements/ContributionTag";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -14,13 +15,29 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
   const { data, isLoading } = queryResult;
   const { id } = useIdentity();
   const record = data?.data;
-
+  const canEdit = id === record?.student?.id;
+  const navigate = useNavigate();
   return (
     <Show
       isLoading={isLoading}
-      canEdit={id === record?.student?.id}
+      canEdit={canEdit}
       canDelete={false}
       title={""}
+      headerButtons={({ defaultButtons }) => (
+        <>
+          {defaultButtons}
+          {canEdit && (
+            <Button
+              type="primary"
+              onClick={() =>
+                navigate(`/management/contributions/review/${record?.id}`)
+              }
+            >
+              View result
+            </Button>
+          )}
+        </>
+      )}
     >
       <div className="flex flex-col md:flex-row pb-10 items-start justify-between gap-4">
         <div>

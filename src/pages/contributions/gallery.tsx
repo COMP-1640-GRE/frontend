@@ -25,13 +25,14 @@ import { applyFilters } from "../../utils/filters";
 import { truncate } from "lodash";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps, searchFormProps, setFilters, setCurrent } = useTable({
-    syncWithLocation: true,
-    onSearch: (params: any) =>
-      applyFilters(params, {
-        contains: ["title"],
-      }),
-  });
+  const { tableProps, searchFormProps, setFilters, setCurrent, setPageSize } =
+    useTable({
+      syncWithLocation: true,
+      onSearch: (params: any) =>
+        applyFilters(params, {
+          contains: ["title"],
+        }),
+    });
 
   const { selectProps: facultySelectProps } = useSelect({
     resource: "faculties",
@@ -115,6 +116,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
               showSizeChanger
               className="mt-4"
               onChange={(page) => setCurrent(page)}
+              onShowSizeChange={(_, pageSize) => setPageSize(pageSize)}
             />
           </div>
         </List>
