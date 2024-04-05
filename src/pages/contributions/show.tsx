@@ -1,3 +1,5 @@
+import { Icon } from "@ant-design/compatible";
+import { CommentOutlined } from "@ant-design/icons";
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import {
   IResourceComponentsProps,
@@ -11,21 +13,20 @@ import {
   Card,
   Carousel,
   Col,
+  Modal,
   Row,
   Space,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CommentList from "../../components/elements/CommentList";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import ContributionTag from "../../components/elements/ContributionTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
-import {
-  REACTION_TYPE,
-  reactionActiveIcons,
-  reactionInactiveIcons,
-} from "../../enums/reaction.enum";
+import { REACTION_TYPE, reactionIcons } from "../../enums/reaction.enum";
 import { useIdentity } from "../../hooks/useIdentity";
+import { getReacted } from "../../utils/reaction";
 
 const { Title } = Typography;
 
@@ -36,6 +37,7 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
   const record = data?.data;
   const canEdit = id === record?.author?.id;
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const { mutate } = useCustomMutation();
   const invalidate = useInvalidate();
   const invalidates = () =>
@@ -45,7 +47,8 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
       invalidates: ["all"],
     });
 
-  const { reacted, ...reaction } = record?.reaction || {};
+  const reaction = record?.reaction || {};
+  const reacted = getReacted(record?.reactions, id);
 
   return (
     <Show
@@ -83,14 +86,16 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
           />
           <Space className="w-full">
             {REACTION_TYPE.map((item) => {
-              const Icon = (
-                reacted === item ? reactionActiveIcons : reactionInactiveIcons
-              )[item];
               return (
                 <Button
                   type="text"
                   size="large"
-                  icon={<Icon />}
+                  icon={
+                    <Icon
+                      type={reactionIcons[item]}
+                      theme={reacted === item ? "filled" : "outlined"}
+                    />
+                  }
                   key={item}
                   onClick={() =>
                     mutate(
@@ -114,6 +119,15 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
                 </Button>
               );
             })}
+            <Button
+              type="text"
+              size="large"
+              icon={<CommentOutlined />}
+              onClick={() => setOpen(true)}
+            >
+              {" "}
+              {record?.comment_count}
+            </Button>
           </Space>
         </div>
         {record?.author ? (
@@ -162,6 +176,20 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
           </Card>
         </Col>
       </Row>
+      <Modal
+        centered
+        open={open}
+        closable
+        onCancel={() => setOpen(false)}
+        footer={null}
+        width={"90%"}
+      >
+        <CommentList
+          contribution_id={open ? record?.id : undefined}
+          id={id}
+          mutate={mutate}
+        />
+      </Modal>
     </Show>
   );
 };

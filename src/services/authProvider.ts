@@ -15,7 +15,6 @@ export const authProvider: AuthBindings = {
         const res = await api
           .post("/auth/login", { username, password, remember })
           .catch(({ response }: AxiosError) => {
-            console.log(response);
             if (response?.status === 428) {
               localStorage.setItem(
                 LocalStorageKey.USER,

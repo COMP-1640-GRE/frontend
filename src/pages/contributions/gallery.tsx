@@ -1,3 +1,4 @@
+import { Icon } from "@ant-design/compatible";
 import { SearchOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { List, useSelect, useTable } from "@refinedev/antd";
 import {
@@ -23,17 +24,14 @@ import { truncate } from "lodash";
 import React, { useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useNavigate } from "react-router-dom";
-import {
-  REACTION_TYPE,
-  reactionActiveIcons,
-  reactionInactiveIcons,
-} from "../../enums/reaction.enum";
+import { REACTION_TYPE, reactionIcons } from "../../enums/reaction.enum";
 import { UserRole } from "../../enums/user.enum";
 import { useIdentity } from "../../hooks/useIdentity";
 import { applyFilters } from "../../utils/filters";
+import { getReacted } from "../../utils/reaction";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
-  const { role, faculty } = useIdentity();
+  const { role, faculty, id } = useIdentity();
   const [date] = useState(new Date().toISOString());
   const {
     tableProps,
@@ -113,7 +111,9 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                   (attachment) => attachment.type === "image"
                 )?.path;
               }
-              const { reacted, ...reaction } = item.reaction;
+
+              const reacted = getReacted(item.reactions, id);
+              const reaction = item.reaction;
 
               return (
                 <Col xs={24} md={12} xl={8} xxl={6} key={item.id}>
@@ -128,11 +128,11 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                     }
                     actions={[
                       ...REACTION_TYPE.map((reactionType) => {
-                        const Icon = (
-                          reacted === reactionType
-                            ? reactionActiveIcons
-                            : reactionInactiveIcons
-                        )[reactionType];
+                        // const Icon = (
+                        //   reacted === reactionType
+                        //     ? reactionActiveIcons
+                        //     : reactionInactiveIcons
+                        // )[reactionType];
                         return (
                           <span
                             key={reactionType}
@@ -154,7 +154,13 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                               );
                             }}
                           >
-                            <Icon /> {reaction[reactionType]}
+                            <Icon
+                              type={reactionIcons[reactionType]}
+                              theme={
+                                reacted === reactionType ? "filled" : "outlined"
+                              }
+                            />{" "}
+                            {reaction[reactionType]}
                           </span>
                         );
                       }),

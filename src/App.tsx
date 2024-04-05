@@ -33,21 +33,21 @@ function App() {
     <BrowserRouter>
       <RefineKbarProvider>
         <ColorModeContextProvider>
-          <AntdApp>
-            <Refine
-              dataProvider={dataProvider}
-              notificationProvider={useNotificationProvider}
-              authProvider={authProvider}
-              accessControlProvider={accessControlProvider}
-              routerProvider={routerBindings}
-              resources={resources}
-              i18nProvider={i18nProvider}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                useNewQueryKeys: true,
-              }}
-            >
+          <Refine
+            dataProvider={dataProvider}
+            notificationProvider={useNotificationProvider}
+            authProvider={authProvider}
+            accessControlProvider={accessControlProvider}
+            routerProvider={routerBindings}
+            resources={resources}
+            i18nProvider={i18nProvider}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+            }}
+          >
+            <AntdApp>
               <Routes>
                 <Route element={AuthElement}>
                   <Route
@@ -69,8 +69,8 @@ function App() {
               <RefineKbar />
               <UnsavedChangesNotifier />
               <DocumentTitleHandler />
-            </Refine>
-          </AntdApp>
+            </AntdApp>
+          </Refine>
         </ColorModeContextProvider>
       </RefineKbarProvider>
     </BrowserRouter>
