@@ -126,12 +126,12 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                           );
                         }}
                       >
-                        {like}{" "}
                         {reacted === "like" ? (
                           <LikeFilled key="like" />
                         ) : (
                           <LikeOutlined key="like" />
-                        )}
+                        )}{" "}
+                        {like}
                       </span>,
                       <span
                         onClick={(e) => {
@@ -152,12 +152,12 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                           );
                         }}
                       >
-                        {dislike}{" "}
                         {reacted === "dislike" ? (
                           <DislikeFilled key="dislike" />
                         ) : (
                           <DislikeOutlined key="dislike" />
-                        )}
+                        )}{" "}
+                        {dislike}
                       </span>,
 
                       <CopyToClipboard
@@ -178,7 +178,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                       title={item["title"]}
                       description={
                         <>
-                          By {student.first_name} {student.last_name}
+                          By {student.full_name}
                           <br />
                           {truncate(item["description"])}
                         </>
@@ -290,5 +290,9 @@ const SORTABLE = [
   {
     value: "created_at",
     label: "Date",
+  },
+  {
+    value: "comment_count",
+    label: "Total comments",
   },
 ];

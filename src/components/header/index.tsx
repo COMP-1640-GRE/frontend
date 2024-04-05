@@ -49,7 +49,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
           defaultChecked={mode === "dark"}
         />
         <Dropdown
-          // trigger={["click"]}
+          trigger={["click"]}
           menu={{
             items: [
               {
@@ -70,10 +70,8 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
           }}
         >
           <Space style={{ marginLeft: "8px" }} size="middle">
-            <Text strong>
-              {user?.first_name} {user?.last_name}
-            </Text>
-            <Avatar src={user?.avatar} alt={user?.first_name} />
+            <Avatar src={user?.avatar} alt={user?.full_name} />
+            <Text strong>{user?.username}</Text>
           </Space>
         </Dropdown>
       </Space>

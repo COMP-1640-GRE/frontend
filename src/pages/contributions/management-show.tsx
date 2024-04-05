@@ -1,8 +1,10 @@
 import { Comment } from "@ant-design/compatible";
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import {
+  BaseRecord,
   IResourceComponentsProps,
   useCustomMutation,
+  useDelete,
   useInvalidate,
   useShow,
 } from "@refinedev/core";
@@ -12,6 +14,7 @@ import {
   Card,
   Carousel,
   Col,
+  Dropdown,
   List,
   Row,
   Select,
@@ -50,6 +53,9 @@ export const ContributionManagementShow: React.FC<
       id: record?.id,
       invalidates: ["detail"],
     });
+
+  const { mutate: deleteMutation } = useDelete();
+  const [editingRecord, setEditingRecord] = React.useState<BaseRecord>();
 
   return (
     <Space direction="vertical" className="w-full">
@@ -214,16 +220,54 @@ export const ContributionManagementShow: React.FC<
             }`}
             itemLayout="horizontal"
             renderItem={(props: any) => (
-              <Comment
-                {...props}
-                author={`${props?.reviewer?.first_name} ${props?.reviewer?.last_name}`}
-                avatar={props?.reviewer?.avatar}
-                datetime={dayjs(props?.created_at).utc(true).fromNow()}
-              />
+              <Dropdown
+                placement="bottomLeft"
+                trigger={["click"]}
+                menu={{
+                  items:
+                    role === UserRole.COORDINATOR
+                      ? [
+                          {
+                            label: "Edit",
+                            key: "edit",
+                            onClick: () => setEditingRecord(props),
+                          },
+                          {
+                            label: "Delete",
+                            key: "delete",
+                            danger: true,
+                            onClick: () =>
+                              deleteMutation(
+                                { id: props?.id, resource: "reviews" },
+                                { onSuccess: invalidates }
+                              ),
+                          },
+                        ]
+                      : [],
+                  style: {
+                    width: "200px",
+                  },
+                }}
+              >
+                <Comment
+                  {...props}
+                  author={`${props?.reviewer?.first_name} ${props?.reviewer?.last_name}`}
+                  avatar={props?.reviewer?.avatar}
+                  datetime={dayjs(props?.created_at).utc(true).fromNow()}
+                />
+              </Dropdown>
             )}
           />
           {role === UserRole.COORDINATOR && (
-            <ReviewEditor contribution_id={record?.id} onFinish={invalidates} />
+            <ReviewEditor
+              key={editingRecord?.id}
+              contribution_id={record?.id}
+              onFinish={() => {
+                invalidates();
+                setEditingRecord(undefined);
+              }}
+              editingRecord={editingRecord}
+            />
           )}
         </Card>
       )}

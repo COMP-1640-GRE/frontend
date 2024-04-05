@@ -7,6 +7,7 @@ export interface Identity {
   email?: string;
   first_name?: string;
   last_name?: string;
+  full_name?: string;
   account_status: AccountStatus;
   created_at: string;
   updated_at: string;
