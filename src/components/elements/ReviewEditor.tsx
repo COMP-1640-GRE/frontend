@@ -1,6 +1,6 @@
 import { SaveButton, useForm } from "@refinedev/antd";
 import { BaseKey, BaseRecord } from "@refinedev/core";
-import { Form, Input } from "antd";
+import { Button, Form, Input, Space } from "antd";
 
 interface IProps {
   contribution_id?: BaseKey;
@@ -26,9 +26,12 @@ const ReviewEditor = ({ contribution_id, editingRecord, onFinish }: IProps) => {
       <Form.Item name="content" initialValue={editingRecord?.content}>
         <Input.TextArea />
       </Form.Item>
-      <SaveButton {...saveButtonProps}>
-        {editingRecord?.id ? "Update review" : "Add review"}
-      </SaveButton>
+      <Space>
+        <SaveButton {...saveButtonProps}>
+          {editingRecord?.id ? "Update review" : "Add review"}
+        </SaveButton>
+        {editingRecord?.id && <Button onClick={onFinish}>Cancel</Button>}
+      </Space>
     </Form>
   );
 };

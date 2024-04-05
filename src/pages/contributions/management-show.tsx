@@ -43,7 +43,7 @@ export const ContributionManagementShow: React.FC<
   const { data, isLoading } = queryResult;
   const { id, role } = useIdentity();
   const record = data?.data;
-  const canEdit = id === record?.student?.id;
+  const canEdit = id === record?.author?.id;
 
   const invalidate = useInvalidate();
   const { mutate, isLoading: isLoadingMutation } = useCustomMutation();
@@ -161,15 +161,13 @@ export const ContributionManagementShow: React.FC<
               format="[Posted at:] YYYY-MM-DD HH:mm:ss"
             />
           </div>
-          {record?.student ? (
+          {record?.author ? (
             <div className="flex flex-row items-center gap-4">
-              <Avatar src={record?.student?.avatar} size={84} shape="square" />
+              <Avatar src={record?.author?.avatar} size={84} shape="square" />
               <div>
-                <p>{record?.student?.faculty?.name}</p>
-                <Title level={4}>
-                  {record?.student.first_name} {record?.student.last_name}
-                </Title>
-                <EmailField value={record?.student?.email} />
+                <p>{record?.author?.faculty?.name}</p>
+                <Title level={4}>{record?.author?.full_name}</Title>
+                <EmailField value={record?.author?.email} />
               </div>
             </div>
           ) : (

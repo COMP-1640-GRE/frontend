@@ -1,13 +1,7 @@
-import {
-  DislikeFilled,
-  DislikeOutlined,
-  LikeFilled,
-  LikeOutlined,
-  SearchOutlined,
-  ShareAltOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { List, useSelect, useTable } from "@refinedev/antd";
 import {
+  CrudFilters,
   IResourceComponentsProps,
   useCustomMutation,
   useInvalidate,
@@ -26,12 +20,21 @@ import {
   Select,
 } from "antd";
 import { truncate } from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useNavigate } from "react-router-dom";
+import {
+  REACTION_TYPE,
+  reactionActiveIcons,
+  reactionInactiveIcons,
+} from "../../enums/reaction.enum";
+import { UserRole } from "../../enums/user.enum";
+import { useIdentity } from "../../hooks/useIdentity";
 import { applyFilters } from "../../utils/filters";
 
 export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
+  const { role, faculty } = useIdentity();
+  const [date] = useState(new Date().toISOString());
   const {
     tableProps,
     searchFormProps,
@@ -43,13 +46,30 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
   } = useTable({
     syncWithLocation: true,
     filters: {
-      permanent: [
-        {
-          field: "status",
-          operator: "eq",
-          value: "approved",
-        },
-      ],
+      permanent: (
+        [
+          {
+            field: "status",
+            operator: "eq",
+            value: "approved",
+          },
+          {
+            field: "semester.end_date",
+            operator: "gte",
+            value: date,
+          },
+        ] as CrudFilters
+      ).concat(
+        [UserRole.GUEST].includes(role as UserRole)
+          ? [
+              {
+                field: "semester.faculty.id",
+                operator: "eq",
+                value: faculty?.id,
+              },
+            ]
+          : []
+      ),
     },
     onSearch: (params: any) =>
       applyFilters(params, {
@@ -84,7 +104,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
         <List title="Contributions">
           <Row gutter={[8, 8]}>
             {tableProps.dataSource?.map((item) => {
-              const student = item["student"];
+              const author = item.author;
               const attachments = item["attachments"];
               let image = "";
 
@@ -93,7 +113,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                   (attachment) => attachment.type === "image"
                 )?.path;
               }
-              const { like, dislike, reacted } = item.reaction;
+              const { reacted, ...reaction } = item.reaction;
 
               return (
                 <Col xs={24} md={12} xl={8} xxl={6} key={item.id}>
@@ -107,59 +127,37 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                       />
                     }
                     actions={[
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          mutate(
-                            {
-                              method: "post",
-                              url: `contributions/${item.id}/reaction`,
-                              values: { type: "like" },
-                              successNotification: {
-                                message: "Reacted",
-                                type: "success",
-                              },
-                            },
-                            {
-                              onSuccess: invalidates,
-                            }
-                          );
-                        }}
-                      >
-                        {reacted === "like" ? (
-                          <LikeFilled key="like" />
-                        ) : (
-                          <LikeOutlined key="like" />
-                        )}{" "}
-                        {like}
-                      </span>,
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          mutate(
-                            {
-                              method: "post",
-                              url: `contributions/${item.id}/reaction`,
-                              values: { type: "dislike" },
-                              successNotification: {
-                                message: "Reacted",
-                                type: "success",
-                              },
-                            },
-                            {
-                              onSuccess: invalidates,
-                            }
-                          );
-                        }}
-                      >
-                        {reacted === "dislike" ? (
-                          <DislikeFilled key="dislike" />
-                        ) : (
-                          <DislikeOutlined key="dislike" />
-                        )}{" "}
-                        {dislike}
-                      </span>,
-
+                      ...REACTION_TYPE.map((reactionType) => {
+                        const Icon = (
+                          reacted === reactionType
+                            ? reactionActiveIcons
+                            : reactionInactiveIcons
+                        )[reactionType];
+                        return (
+                          <span
+                            key={reactionType}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate(
+                                {
+                                  method: "post",
+                                  url: `contributions/${item.id}/reaction`,
+                                  values: { type: reactionType },
+                                  successNotification: {
+                                    message: "Reacted",
+                                    type: "success",
+                                  },
+                                },
+                                {
+                                  onSuccess: invalidates,
+                                }
+                              );
+                            }}
+                          >
+                            <Icon /> {reaction[reactionType]}
+                          </span>
+                        );
+                      }),
                       <CopyToClipboard
                         text={window.location.href}
                         onCopy={() => {
@@ -174,11 +172,11 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
                     ]}
                   >
                     <Card.Meta
-                      avatar={<Avatar src={student.avatar} />}
+                      avatar={<Avatar src={author.avatar} />}
                       title={item["title"]}
                       description={
                         <>
-                          By {student.full_name}
+                          By {author.full_name}
                           <br />
                           {truncate(item["description"])}
                         </>

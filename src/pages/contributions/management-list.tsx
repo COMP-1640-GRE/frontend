@@ -104,12 +104,10 @@ export const ContributionManagementList: React.FC<
               render={(_, record: BaseRecord) => record.semester.faculty.name}
             />
             <Table.Column
-              dataIndex="student.first_name"
+              dataIndex="author.full_name"
               title="Student"
               sorter
-              render={(_, record: BaseRecord) =>
-                record.student.first_name + " " + record.student.last_name
-              }
+              render={(_, record: BaseRecord) => record.author?.full_name}
             />
             <Table.Column
               dataIndex="status"

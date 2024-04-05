@@ -39,7 +39,7 @@ export const ContributionEdit: React.FC<IResourceComponentsProps> = () => {
     <Edit
       saveButtonProps={saveButtonProps}
       isLoading={formLoading}
-      canDelete={id === record?.student?.id}
+      canDelete={id === record?.author?.id}
     >
       <Form
         {...formProps}

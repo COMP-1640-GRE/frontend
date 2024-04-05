@@ -6,7 +6,8 @@ export type Resource =
   | "users"
   | "contributions"
   | "contributions_gallery"
-  | "reviews";
+  | "reviews"
+  | "comments";
 
 interface IResourceProps extends ResourceProps {
   name: Resource;

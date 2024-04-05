@@ -1,12 +1,31 @@
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
-import { IResourceComponentsProps, useShow } from "@refinedev/core";
-import { Avatar, Button, Card, Carousel, Col, Row, Typography } from "antd";
+import {
+  IResourceComponentsProps,
+  useCustomMutation,
+  useInvalidate,
+  useShow,
+} from "@refinedev/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  Carousel,
+  Col,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import React from "react";
-import EvaluateTag from "../../components/elements/EvaluateTag";
-import { useIdentity } from "../../hooks/useIdentity";
+import { useNavigate } from "react-router-dom";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import ContributionTag from "../../components/elements/ContributionTag";
-import { useNavigate } from "react-router-dom";
+import EvaluateTag from "../../components/elements/EvaluateTag";
+import {
+  REACTION_TYPE,
+  reactionActiveIcons,
+  reactionInactiveIcons,
+} from "../../enums/reaction.enum";
+import { useIdentity } from "../../hooks/useIdentity";
 
 const { Title } = Typography;
 
@@ -15,8 +34,19 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
   const { data, isLoading } = queryResult;
   const { id } = useIdentity();
   const record = data?.data;
-  const canEdit = id === record?.student?.id;
+  const canEdit = id === record?.author?.id;
   const navigate = useNavigate();
+  const { mutate } = useCustomMutation();
+  const invalidate = useInvalidate();
+  const invalidates = () =>
+    invalidate({
+      resource: "contributions",
+      id: record?.id,
+      invalidates: ["all"],
+    });
+
+  const { reacted, ...reaction } = record?.reaction || {};
+
   return (
     <Show
       isLoading={isLoading}
@@ -51,16 +81,50 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
             value={record?.created_at}
             format="[Posted at:] YYYY-MM-DD HH:mm:ss"
           />
+          <Space className="w-full">
+            {REACTION_TYPE.map((item) => {
+              const Icon = (
+                reacted === item ? reactionActiveIcons : reactionInactiveIcons
+              )[item];
+              return (
+                <Button
+                  type="text"
+                  size="large"
+                  icon={<Icon />}
+                  key={item}
+                  onClick={() =>
+                    mutate(
+                      {
+                        method: "post",
+                        url: `contributions/${record?.id}/reaction`,
+                        values: { type: item },
+                        successNotification: {
+                          message: "Reacted",
+                          type: "success",
+                        },
+                      },
+                      {
+                        onSuccess: invalidates,
+                      }
+                    )
+                  }
+                >
+                  {" "}
+                  {reaction[item]}
+                </Button>
+              );
+            })}
+          </Space>
         </div>
-        {record?.student ? (
+        {record?.author ? (
           <div className="flex flex-row items-center gap-4">
-            <Avatar src={record?.student?.avatar} size={84} shape="square" />
+            <Avatar src={record?.author?.avatar} size={84} shape="square" />
             <div>
-              <p>{record?.student?.faculty?.name}</p>
+              <p>{record?.author?.faculty?.name}</p>
               <Title level={4}>
-                {record?.student.first_name} {record?.student.last_name}
+                {record?.author.first_name} {record?.author.last_name}
               </Title>
-              <EmailField value={record?.student?.email} />
+              <EmailField value={record?.author?.email} />
             </div>
           </div>
         ) : (

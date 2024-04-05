@@ -30,20 +30,25 @@ const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
     semesters: ["list", "create", "edit", "delete", "show"],
     faculties: ["list", "create", "edit", "delete", "show"],
     contributions: ["list", "show", "delete"],
+    comments: ["create", "edit", "delete"],
   },
   faculty_marketing_coordinator: {
     contributions: ["list", "show"],
     reviews: ["list", "create", "edit", "delete"],
+    comments: ["create", "edit", "delete"],
   },
   university_marketing_manager: {
     contributions: ["list", "show"],
     reviews: ["list"],
+    comments: ["create", "edit", "delete"],
   },
   guest: {
     contributions_gallery: ["list", "show"],
+    comments: ["create", "edit", "delete"],
   },
   student: {
     contributions_gallery: ["list", "create", "edit", "show", "delete"],
     reviews: ["list"],
+    comments: ["create", "edit", "delete"],
   },
 };
