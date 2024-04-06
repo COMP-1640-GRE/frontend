@@ -1,18 +1,25 @@
+import { BellOutlined } from "@ant-design/icons";
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import { useGetIdentity, useLogout } from "@refinedev/core";
+import { useInfiniteList, useLogout } from "@refinedev/core";
 import {
   Layout as AntdLayout,
   Avatar,
+  Button,
+  Divider,
   Dropdown,
+  List,
+  Popover,
+  Skeleton,
   Space,
   Switch,
   Typography,
   theme,
 } from "antd";
 import React, { useContext } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import { ColorModeContext } from "../../contexts/color-mode";
-import { Identity } from "../../services/types";
+import { useIdentity } from "../../hooks/useIdentity";
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -21,7 +28,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   sticky,
 }) => {
   const { token } = useToken();
-  const { data: user } = useGetIdentity<Identity>();
+  const user = useIdentity();
   const { mode, setMode } = useContext(ColorModeContext);
   const { mutate: logout } = useLogout();
   const headerStyles: React.CSSProperties = {
@@ -39,9 +46,58 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     headerStyles.zIndex = 1;
   }
 
+  const { data, hasNextPage, fetchNextPage } = useInfiniteList({
+    resource: "notifications",
+  });
+
+  const allPages = (data?.pages ?? []).flatMap((page) => page.data);
+
   return (
     <AntdLayout.Header style={headerStyles}>
       <Space>
+        <Popover
+          trigger={["click"]}
+          content={
+            <div
+              id="scrollableNotification"
+              className="max-h-[300px] overflow-y-scroll w-full md:w-96"
+            >
+              <InfiniteScroll
+                dataLength={allPages.length}
+                next={fetchNextPage}
+                hasMore={!!hasNextPage}
+                loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+                endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+                scrollableTarget="scrollableNotification"
+              >
+                <List
+                  dataSource={allPages}
+                  renderItem={(item: any) => (
+                    <List.Item key={item.id}>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            src={<BellOutlined />}
+                            className="bg-white/10"
+                          />
+                        }
+                        // title={<a href="https://ant.design">{item.name.last}</a>}
+                        description={item.content}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </InfiniteScroll>
+            </div>
+          }
+        >
+          <Button
+            type="text"
+            shape="circle"
+            icon={<BellOutlined />}
+            size="large"
+          />
+        </Popover>
         <Switch
           checkedChildren="🌛"
           unCheckedChildren="🔆"
