@@ -7,7 +7,8 @@ export type Resource =
   | "contributions"
   | "contributions_gallery"
   | "reviews"
-  | "comments";
+  | "comments"
+  | "systems";
 
 interface IResourceProps extends ResourceProps {
   name: Resource;
@@ -61,5 +62,9 @@ export const resources: IResourceProps[] = [
     show: "/contributions/:id",
     identifier: "contributions_gallery",
     meta: { canDelete: true },
+  },
+  {
+    name: "systems",
+    list: "/systems",
   },
 ];

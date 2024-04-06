@@ -20,16 +20,13 @@ import {
 } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CommentList, {
-  CommentActivity,
-} from "../../components/elements/CommentList";
+import CommentList from "../../components/elements/CommentList";
 import ContributionStatusTag from "../../components/elements/ContributionStatusTag";
 import ContributionTag from "../../components/elements/ContributionTag";
 import EvaluateTag from "../../components/elements/EvaluateTag";
 import { REACTION_TYPE, reactionIcons } from "../../enums/reaction.enum";
 import { useIdentity } from "../../hooks/useIdentity";
 import { getReacted } from "../../utils/reaction";
-import CommentEditor from "../../components/elements/CommentEditor";
 
 const { Title } = Typography;
 

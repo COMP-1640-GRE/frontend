@@ -1,7 +1,7 @@
 import { Comment } from "@ant-design/compatible";
 import { SaveButton, TextField, useForm } from "@refinedev/antd";
 import { BaseKey } from "@refinedev/core";
-import { Button, Card, Form, Input, Space } from "antd";
+import { Button, Card, Checkbox, Form, Input, Space } from "antd";
 import dayjs from "../../libs/dayjs";
 import { CommentActivity } from "./CommentList";
 
@@ -46,7 +46,11 @@ const CommentEditor = ({ contribution_id, activity, onFinish }: IProps) => {
               <Comment
                 author={activity?.comment?.author?.full_name}
                 avatar={activity?.comment?.author?.avatar}
-                content={activity?.comment?.content}
+                content={
+                  activity?.comment.blocked
+                    ? "Blocked Comment"
+                    : activity?.comment?.content
+                }
                 datetime={dayjs(activity?.comment?.created_at)
                   .utc(true)
                   .fromNow()}
@@ -75,6 +79,9 @@ const CommentEditor = ({ contribution_id, activity, onFinish }: IProps) => {
           }
         >
           <Input.TextArea />
+        </Form.Item>
+        <Form.Item name={"is_anonymous"} valuePropName="checked">
+          <Checkbox>Anonymously</Checkbox>
         </Form.Item>
         <Space>
           <SaveButton {...saveButtonProps}>

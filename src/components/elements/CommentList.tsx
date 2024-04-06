@@ -80,116 +80,130 @@ const Comments = ({ comments, ...rest }: ICommentsProps) => {
   const { mutate, id, refetch, setActivity, deleteMutation } = rest;
   return (
     <>
-      {comments?.map((comment) => {
-        const reaction = comment.reaction;
-        const reacted = getReacted(comment.reactions, id);
-        const canEdit = id === comment.author?.id;
-        return (
-          <>
-            <div className="group relative" key={comment?.id}>
-              <Comment
-                className="bg-transparent"
-                author={comment.author?.full_name}
-                avatar={comment.author?.avatar}
-                content={comment.content}
-                datetime={dayjs(comment?.created_at).utc(true).fromNow()}
-                actions={[
-                  ...REACTION_TYPE.map((item) => {
-                    return (
-                      <Button
-                        type="text"
-                        size="large"
-                        icon={
-                          <Icon
-                            type={reactionIcons[item]}
-                            theme={reacted === item ? "filled" : "outlined"}
-                          />
-                        }
-                        key={item}
-                        onClick={() =>
-                          mutate(
-                            {
-                              method: "post",
-                              url: `comments/${comment?.id}/reaction`,
-                              values: { type: item },
-                              successNotification: {
-                                message: "Reacted",
-                                type: "success",
-                              },
-                            },
-                            {
-                              onSuccess: refetch,
-                            }
-                          )
-                        }
-                      >
-                        {" "}
-                        {reaction[item]}
-                      </Button>
-                    );
-                  }),
-                  <Button
-                    type="text"
-                    key="reply"
-                    icon={<Icon type="rollback" />}
-                    onClick={() => setActivity({ comment, type: "reply" })}
-                  >
-                    {" "}
-                    {comment?.children?.length}
-                  </Button>,
-                ]}
-              />
-              {canEdit && (
-                <Popover
+      {comments
+        ?.sort(
+          (a, b) =>
+            new Date(a?.created_at).getTime() -
+            new Date(b?.created_at).getTime()
+        )
+        ?.map((comment) => {
+          const reaction = comment.reaction;
+          const reacted = getReacted(comment.reactions, id);
+          const canEdit = id === comment.author?.id;
+          return (
+            <>
+              <div className="group relative" key={comment?.id}>
+                <Comment
+                  className="bg-transparent"
+                  author={comment.author?.full_name}
+                  avatar={comment.author?.avatar}
                   content={
-                    <Space direction="vertical">
-                      <Button
-                        type="text"
-                        icon={<EditOutlined />}
-                        onClick={() =>
-                          setActivity({
-                            comment,
-                            type: "edit",
-                          })
-                        }
-                        style={{ width: "100%" }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        type="text"
-                        icon={<DeleteOutlined />}
-                        danger
-                        style={{ width: "100%" }}
-                        onClick={() =>
-                          deleteMutation(
-                            { id: comment?.id, resource: "comments" },
-                            { onSuccess: refetch }
-                          )
-                        }
-                      >
-                        Delete
-                      </Button>
-                    </Space>
+                    comment.blocked ? (
+                      <p className="text-red-400">
+                        This comment has been blocked
+                      </p>
+                    ) : (
+                      comment.content
+                    )
                   }
-                >
-                  <Button
-                    type="text"
-                    icon={
-                      <InfoCircleOutlined className="opacity-0 group-hover:opacity-100" />
+                  datetime={dayjs(comment?.created_at).utc(true).fromNow()}
+                  actions={[
+                    ...REACTION_TYPE.map((item) => {
+                      return (
+                        <Button
+                          type="text"
+                          size="large"
+                          icon={
+                            <Icon
+                              type={reactionIcons[item]}
+                              theme={reacted === item ? "filled" : "outlined"}
+                            />
+                          }
+                          key={item}
+                          onClick={() =>
+                            mutate(
+                              {
+                                method: "post",
+                                url: `comments/${comment?.id}/reaction`,
+                                values: { type: item },
+                                successNotification: {
+                                  message: "Reacted",
+                                  type: "success",
+                                },
+                              },
+                              {
+                                onSuccess: refetch,
+                              }
+                            )
+                          }
+                        >
+                          {" "}
+                          {reaction[item]}
+                        </Button>
+                      );
+                    }),
+                    <Button
+                      type="text"
+                      key="reply"
+                      icon={<Icon type="rollback" />}
+                      onClick={() => setActivity({ comment, type: "reply" })}
+                    >
+                      {" "}
+                      {comment?.children?.length}
+                    </Button>,
+                  ]}
+                />
+                {canEdit && (
+                  <Popover
+                    content={
+                      <Space direction="vertical">
+                        <Button
+                          type="text"
+                          icon={<EditOutlined />}
+                          onClick={() =>
+                            setActivity({
+                              comment,
+                              type: "edit",
+                            })
+                          }
+                          style={{ width: "100%" }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          type="text"
+                          icon={<DeleteOutlined />}
+                          danger
+                          style={{ width: "100%" }}
+                          onClick={() =>
+                            deleteMutation(
+                              { id: comment?.id, resource: "comments" },
+                              { onSuccess: refetch }
+                            )
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </Space>
                     }
-                    shape="circle"
-                    className="transition-all duration-300 max-h-0 max-w-0 group-hover:max-h-20 group-hover:max-w-20 absolute top-1/2 right-0 -translate-x-full -translate-y-full overflow-hidden"
-                  />
-                </Popover>
-              )}
-            </div>
-            <div className="ml-10">
-              <Comments {...rest} comments={comment.children} />
-            </div>
-          </>
-        );
-      })}
+                  >
+                    <Button
+                      type="text"
+                      icon={
+                        <InfoCircleOutlined className="opacity-0 group-hover:opacity-100" />
+                      }
+                      shape="circle"
+                      className="transition-all duration-300 max-h-0 max-w-0 group-hover:max-h-20 group-hover:max-w-20 absolute top-1/2 right-0 -translate-x-full -translate-y-full overflow-hidden"
+                    />
+                  </Popover>
+                )}
+              </div>
+              <div className="ml-10">
+                <Comments {...rest} comments={comment.children} />
+              </div>
+            </>
+          );
+        })}
     </>
   );
 };

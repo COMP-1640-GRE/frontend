@@ -243,6 +243,7 @@ export const ContributionGallery: React.FC<IResourceComponentsProps> = () => {
           <Form>
             <Form.Item>
               <Select
+                value={sorters[0]?.field}
                 allowClear
                 className="w-full"
                 options={SORTABLE}

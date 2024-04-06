@@ -1,7 +1,7 @@
 import { AccessControlProvider } from "@refinedev/core";
-import { UserRole } from "../enums/user.enum";
-import { Resource } from "../pages/routes/refineResources";
-import { authProvider } from "./authProvider";
+import { UserRole } from "../../enums/user.enum";
+import { Resource } from "./refineResources";
+import { authProvider } from "../../services/authProvider";
 
 export const accessControlProvider: AccessControlProvider = {
   can: async ({ resource, action, params }) => {
@@ -31,16 +31,19 @@ const rolesCan: Record<UserRole, Partial<Record<Resource, Action[]>>> = {
     faculties: ["list", "create", "edit", "delete", "show"],
     contributions: ["list", "show", "delete"],
     comments: ["create", "edit", "delete"],
+    systems: ["list"],
   },
   faculty_marketing_coordinator: {
     contributions: ["list", "show"],
     reviews: ["list", "create", "edit", "delete"],
     comments: ["create", "edit", "delete"],
+    systems: ["list"],
   },
   university_marketing_manager: {
     contributions: ["list", "show"],
     reviews: ["list"],
     comments: ["create", "edit", "delete"],
+    systems: ["list"],
   },
   guest: {
     contributions_gallery: ["list", "show"],
