@@ -3,17 +3,12 @@ import { Card, Form, Input, Switch, Typography } from "antd";
 import { capitalize } from "lodash";
 
 const SystemConfigs = () => {
-  const { formProps, saveButtonProps, form } = useForm({
+  const { formProps, saveButtonProps } = useForm({
     resource: "systems/config",
     redirect: false,
     action: "edit",
     id: "",
-    onMutationSuccess: () => {
-      form.resetFields();
-    },
   });
-
-  console.log(formProps.initialValues);
 
   return (
     <>
@@ -45,7 +40,6 @@ const Configs = ({ rootPath, obj }: IProps) => {
   if (!obj || typeof obj !== "object") return <></>;
   return (
     <>
-      {/* <Typography.Title level={4}>{rootPath}</Typography.Title> */}
       {Object.keys(obj).map((key, index) => {
         const type = typeof obj[key];
         let item = null;
