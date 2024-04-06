@@ -1,3 +1,10 @@
+import {
+  AuditOutlined,
+  FileTextOutlined,
+  ScheduleOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { ResourceProps } from "@refinedev/core";
 
 export type Resource =
@@ -24,6 +31,7 @@ export const resources: IResourceProps[] = [
     show: "/management/faculties/show/:id",
     meta: {
       canDelete: true,
+      icon: <AuditOutlined />,
     },
   },
   {
@@ -34,6 +42,7 @@ export const resources: IResourceProps[] = [
     show: "/management/semesters/show/:id",
     meta: {
       canDelete: true,
+      icon: <ScheduleOutlined />,
     },
   },
   {
@@ -44,6 +53,7 @@ export const resources: IResourceProps[] = [
     show: "/management/users/show/:id",
     meta: {
       canDelete: true,
+      icon: <UserOutlined />,
     },
   },
   {
@@ -52,6 +62,7 @@ export const resources: IResourceProps[] = [
     show: "/management/contributions/review/:id",
     meta: {
       canDelete: true,
+      icon: <FileTextOutlined />,
     },
   },
   {
@@ -61,10 +72,13 @@ export const resources: IResourceProps[] = [
     edit: "/contributions/edit/:id",
     show: "/contributions/:id",
     identifier: "contributions_gallery",
-    meta: { canDelete: true },
+    meta: { canDelete: true, icon: <FileTextOutlined /> },
   },
   {
     name: "systems",
-    list: "/systems",
+    list: "/management/systems",
+    meta: {
+      icon: <SettingOutlined />,
+    },
   },
 ];

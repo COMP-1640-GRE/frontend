@@ -25,6 +25,7 @@ import {
 } from "../contributions";
 import { ContributionShow } from "../contributions/show";
 import { ContributionManagementShow } from "../contributions/management-show";
+import SystemsManagement from "../systems/list";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -53,6 +54,7 @@ export const authRoutes: RouteProps[] = [
           <Route index element={<ContributionManagementList />} />,
           <Route path="review/:id" element={<ContributionManagementShow />} />,
         </Route>
+        <Route path="systems" element={<SystemsManagement />} />,
       </Route>,
     ],
   },
