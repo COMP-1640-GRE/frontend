@@ -1,4 +1,9 @@
 import { Comment } from "@ant-design/compatible";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import {
   BaseRecord,
@@ -14,8 +19,8 @@ import {
   Card,
   Carousel,
   Col,
-  Dropdown,
   List,
+  Popover,
   Row,
   Select,
   Space,
@@ -206,69 +211,82 @@ export const ContributionManagementShow: React.FC<
           </Col>
         </Row>
       </Show>
-      {([UserRole.COORDINATOR, UserRole.ADMIN, UserRole.MANAGER].includes(
-        role!
-      ) ||
-        canEdit) && (
-        <Card>
-          <List
-            dataSource={record?.reviews}
-            header={`${record?.reviews.length} ${
-              record?.reviews.length > 1 ? "reviews" : "review"
-            }`}
-            itemLayout="horizontal"
-            renderItem={(props: any) => (
-              <Dropdown
-                placement="bottomLeft"
-                trigger={["click"]}
-                menu={{
-                  items:
-                    role === UserRole.COORDINATOR
-                      ? [
-                          {
-                            label: "Edit",
-                            key: "edit",
-                            onClick: () => setEditingRecord(props),
-                          },
-                          {
-                            label: "Delete",
-                            key: "delete",
-                            danger: true,
-                            onClick: () =>
+      {role &&
+        ([UserRole.COORDINATOR, UserRole.ADMIN, UserRole.MANAGER].includes(
+          role
+        ) ||
+          canEdit) && (
+          <Card>
+            <List
+              dataSource={record?.reviews}
+              header={`${record?.reviews.length} ${
+                record?.reviews.length > 1 ? "reviews" : "review"
+              }`}
+              itemLayout="horizontal"
+              renderItem={(props: any) => (
+                <div className="group relative" key={props?.id}>
+                  <Comment
+                    {...props}
+                    className="bg-transparent"
+                    author={props?.reviewer?.full_name}
+                    avatar={props?.reviewer?.avatar}
+                    datetime={dayjs(props?.created_at).utc(true).fromNow()}
+                  />
+                  {role === UserRole.COORDINATOR && (
+                    <Popover
+                      content={
+                        <Space direction="vertical">
+                          <Button
+                            type="text"
+                            icon={<EditOutlined />}
+                            onClick={() => setEditingRecord(props)}
+                            style={{ width: "100%" }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="text"
+                            icon={<DeleteOutlined />}
+                            danger
+                            style={{ width: "100%" }}
+                            onClick={() =>
                               deleteMutation(
                                 { id: props?.id, resource: "reviews" },
                                 { onSuccess: invalidates }
-                              ),
-                          },
-                        ]
-                      : [],
-                  style: {
-                    width: "200px",
-                  },
-                }}
-              >
-                <Comment
-                  {...props}
-                  author={`${props?.reviewer?.first_name} ${props?.reviewer?.last_name}`}
-                  avatar={props?.reviewer?.avatar}
-                  datetime={dayjs(props?.created_at).utc(true).fromNow()}
-                />
-              </Dropdown>
-            )}
-          />
-          {role === UserRole.COORDINATOR && (
-            <ReviewEditor
-              key={editingRecord?.id}
-              contribution_id={record?.id}
-              onFinish={() => {
-                invalidates();
-                setEditingRecord(undefined);
-              }}
-              editingRecord={editingRecord}
+                              )
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </Space>
+                      }
+                    >
+                      <Button
+                        type="text"
+                        icon={
+                          <InfoCircleOutlined className="opacity-0 group-hover:opacity-100" />
+                        }
+                        shape="circle"
+                        className="transition-all duration-300 max-h-0 max-w-0 group-hover:max-h-20 group-hover:max-w-20 absolute top-1/2 right-0 -translate-x-full -translate-y-1/2 overflow-hidden"
+                      />
+                    </Popover>
+                  )}
+                </div>
+              )}
             />
-          )}
-        </Card>
-      )}
+            {role === UserRole.COORDINATOR && (
+              <ReviewEditor
+                key={editingRecord?.id}
+                contribution_id={record?.id}
+                onFinish={() => {
+                  invalidates();
+                  setEditingRecord(undefined);
+                }}
+                editingRecord={editingRecord}
+              />
+            )}
+          </Card>
+        )}
     </Space>
   );
 };
