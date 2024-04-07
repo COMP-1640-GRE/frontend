@@ -100,8 +100,12 @@ export const ContributionCreate: React.FC<IResourceComponentsProps> = () => {
           valuePropName="checked"
           rules={[
             {
-              required: true,
-              message: "Please agree to the terms and conditions",
+              validator: (_, value) => {
+                if (value) return Promise.resolve();
+                return Promise.reject(
+                  "Please agree to the terms and conditions"
+                );
+              },
             },
           ]}
         >

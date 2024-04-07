@@ -15,12 +15,13 @@ import {
   Typography,
   theme,
 } from "antd";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import { ColorModeContext } from "../../contexts/color-mode";
 import { useIdentity } from "../../hooks/useIdentity";
 import dayjs from "../../libs/dayjs";
+import { baseURL } from "../../services/apis";
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -32,6 +33,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   const user = useIdentity();
   const { mode, setMode } = useContext(ColorModeContext);
   const { mutate: logout } = useLogout();
+  const { id } = useIdentity();
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
@@ -52,6 +54,19 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   });
 
   const allPages = (data?.pages ?? []).flatMap((page) => page.data);
+
+  useEffect(() => {
+    if (!id) return;
+    const event = new EventSource(`${baseURL}/events/notifications`, {
+      withCredentials: true,
+    });
+    event.onmessage = () => {
+      console.log("onmessage");
+    };
+    event.addEventListener(`${id}`, (event) => {
+      console.log(event);
+    });
+  }, [id]);
 
   return (
     <AntdLayout.Header style={headerStyles}>
