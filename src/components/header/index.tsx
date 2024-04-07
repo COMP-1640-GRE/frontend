@@ -20,6 +20,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import { ColorModeContext } from "../../contexts/color-mode";
 import { useIdentity } from "../../hooks/useIdentity";
+import dayjs from "../../libs/dayjs";
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -46,7 +47,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     headerStyles.zIndex = 1;
   }
 
-  const { data, hasNextPage, fetchNextPage } = useInfiniteList({
+  const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteList({
     resource: "notifications",
   });
 
@@ -57,6 +58,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
       <Space>
         <Popover
           trigger={["click"]}
+          onOpenChange={(visible) => visible && refetch()}
           content={
             <div
               id="scrollableNotification"
@@ -81,8 +83,8 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
                             className="bg-white/10"
                           />
                         }
-                        // title={<a href="https://ant.design">{item.name.last}</a>}
-                        description={item.content}
+                        title={item.content}
+                        description={dayjs(item.created_at).utc(true).fromNow()}
                       />
                     </List.Item>
                   )}

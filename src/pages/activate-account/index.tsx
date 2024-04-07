@@ -1,7 +1,6 @@
 import { ThemedTitleV2 } from "@refinedev/antd";
 import {
   useCustomMutation,
-  useGetIdentity,
   useNotification,
   useTranslate,
 } from "@refinedev/core";
@@ -19,7 +18,7 @@ import {
 import { CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 import { LocalStorageKey } from "../../enums/local-storage.enum";
-import { Identity } from "../../services/types";
+import { useIdentity } from "../../hooks/useIdentity";
 
 type ActivateForm = {
   username: string;
@@ -37,7 +36,7 @@ export const ActivateAccount = () => {
   const translate = useTranslate();
   const navigate = useNavigate();
   const { open } = useNotification();
-  const { data: identity } = useGetIdentity<Identity>();
+  const identity = useIdentity();
   const { mutate, isLoading } = useCustomMutation();
 
   const activate = (args: ActivateForm) => {
@@ -169,7 +168,7 @@ export const ActivateAccount = () => {
           label={translate("pages.activate.fields.password", "Password")}
           rules={[{ required: true }]}
         >
-          <Input
+          <Input.Password
             type="password"
             autoComplete="current-password"
             placeholder="●●●●●●●●"
@@ -184,10 +183,9 @@ export const ActivateAccount = () => {
           )}
           rules={[{ required: true }]}
         >
-          <Input
+          <Input.Password
             type="password"
             autoComplete="current-password"
-            placeholder="●●●●●●●●"
             size="large"
           />
         </Form.Item>
@@ -199,10 +197,9 @@ export const ActivateAccount = () => {
           )}
           rules={[{ required: true }]}
         >
-          <Input
+          <Input.Password
             type="password"
             autoComplete="current-password"
-            placeholder="●●●●●●●●"
             size="large"
           />
         </Form.Item>

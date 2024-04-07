@@ -1,5 +1,5 @@
 import { Icon } from "@ant-design/compatible";
-import { CommentOutlined } from "@ant-design/icons";
+import { CommentOutlined, EyeOutlined } from "@ant-design/icons";
 import { DateField, EmailField, Show, TextField } from "@refinedev/antd";
 import {
   IResourceComponentsProps,
@@ -128,6 +128,10 @@ export const ContributionShow: React.FC<IResourceComponentsProps> = () => {
             >
               {" "}
               {record?.comment_count}
+            </Button>
+            <Button type="text" size="large" icon={<EyeOutlined />}>
+              {" "}
+              {record?.view_count}
             </Button>
           </Space>
         </div>

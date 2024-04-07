@@ -161,10 +161,9 @@ export const Login: React.FC<LoginProps> = ({
             label={translate("pages.login.fields.password", "Password")}
             rules={[{ required: true }]}
           >
-            <Input
+            <Input.Password
               type="password"
               autoComplete="current-password"
-              placeholder="●●●●●●●●"
               size="large"
             />
           </Form.Item>
