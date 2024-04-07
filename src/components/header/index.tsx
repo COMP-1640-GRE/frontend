@@ -1,6 +1,6 @@
 import { BellOutlined } from "@ant-design/icons";
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import { useInfiniteList, useLogout } from "@refinedev/core";
+import { useInfiniteList, useLogout, useNotification } from "@refinedev/core";
 import {
   Layout as AntdLayout,
   Avatar,
@@ -34,6 +34,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   const { mode, setMode } = useContext(ColorModeContext);
   const { mutate: logout } = useLogout();
   const { id } = useIdentity();
+  const { open } = useNotification();
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
@@ -64,8 +65,24 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
       console.log("onmessage");
     };
     event.addEventListener(`${id}`, (event) => {
-      console.log(event);
+      console.log("event", event);
+      try {
+        const data = JSON.parse(event.data);
+        console.log("event.data", data);
+        open?.({
+          type: "success",
+          description: "Notification",
+          message: data.content,
+        });
+        refetch();
+      } catch {
+        //
+      }
     });
+
+    return () => {
+      event.close();
+    };
   }, [id]);
 
   return (
