@@ -1,5 +1,6 @@
 import {
   AuditOutlined,
+  DashboardOutlined,
   FileTextOutlined,
   ScheduleOutlined,
   SettingOutlined,
@@ -15,7 +16,8 @@ export type Resource =
   | "contributions_gallery"
   | "reviews"
   | "comments"
-  | "systems";
+  | "systems"
+  | "dashboard";
 
 interface IResourceProps extends ResourceProps {
   name: Resource;
@@ -23,6 +25,13 @@ interface IResourceProps extends ResourceProps {
 }
 
 export const resources: IResourceProps[] = [
+  {
+    name: "dashboard",
+    list: "/dashboard",
+    meta: {
+      icon: <DashboardOutlined />,
+    },
+  },
   {
     name: "faculties",
     list: "/management/faculties",

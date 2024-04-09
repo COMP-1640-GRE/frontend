@@ -61,9 +61,6 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     const event = new EventSource(`${baseURL}/events/notifications`, {
       withCredentials: true,
     });
-    event.onmessage = () => {
-      console.log("onmessage");
-    };
     event.addEventListener(`${id}`, (event) => {
       console.log("event", event);
       try {

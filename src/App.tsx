@@ -52,8 +52,9 @@ function App() {
                 <Route element={AuthElement}>
                   <Route
                     index
-                    // TODO: navigate to resource based on user role
-                    element={<NavigateToResource resource="blog_posts" />}
+                    element={
+                      <NavigateToResource resource="contributions_gallery" />
+                    }
                   />
                   {authRoutes.map((route) => (
                     <Route key={route.path} {...route} />

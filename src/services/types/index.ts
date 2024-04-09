@@ -20,4 +20,5 @@ export interface Faculty {
   name: string;
   created_at: string;
   updated_at: string;
+  guest_resource: string[];
 }

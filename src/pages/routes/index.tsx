@@ -26,6 +26,7 @@ import {
 import { ContributionShow } from "../contributions/show";
 import { ContributionManagementShow } from "../contributions/management-show";
 import SystemsManagement from "../systems/list";
+import Dashboard from "../dashboard";
 
 export const authRoutes: RouteProps[] = [
   {
@@ -66,6 +67,10 @@ export const authRoutes: RouteProps[] = [
       <Route path=":id" element={<ContributionShow />} />,
       <Route path="create" element={<ContributionCreate />} />,
     ],
+  },
+  {
+    path: "/dashboard",
+    children: <Route index element={<Dashboard />} />,
   },
   {
     path: "/change-password",
