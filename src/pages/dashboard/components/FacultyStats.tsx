@@ -4,6 +4,7 @@ import { capitalize } from "lodash";
 import { UserRole } from "../../../enums/user.enum";
 import { useIdentity } from "../../../hooks/useIdentity";
 import { PieChart } from "./PieChart";
+import { isGuestCanAccess } from "../../../utils/dashboard";
 
 interface IProps {
   roles?: UserRole[];
@@ -14,37 +15,35 @@ const FacultyStats = ({
   roles = [UserRole.ADMIN, UserRole.MANAGER, UserRole.COORDINATOR],
   query,
 }: IProps) => {
-  const { role } = useIdentity();
-  const canView = role && roles.includes(role);
+  const identity = useIdentity();
+  const canStats =
+    roles.includes(identity.role) &&
+    isGuestCanAccess(identity, "/dashboard/faculty-stats");
 
-  const { data, isLoading } = useCustom({
+  const { data: stats, isLoading: isLoadingStats } = useCustom({
     method: "get",
     url: "/dashboard/faculty-stats",
     config: { query },
-    queryOptions: { enabled: canView },
+    queryOptions: { enabled: canStats },
   });
-
-  if (!canView) {
-    return null;
-  }
 
   return (
     <>
       <Typography.Title level={3}>Faculties</Typography.Title>
-      {data?.data && (
+      {canStats && stats?.data && (
         <>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12}>
               <Card bordered={false}>
                 <PieChart
-                  isLoading={isLoading}
+                  isLoading={isLoadingStats}
                   title={{
                     text: "Contributions",
                   }}
-                  data={data?.data.map((items) => ({
+                  data={stats?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributions.replaceAll("_", " "),
+                      items.total_contributions.replaceAll("_", " ")
                     ),
                   }))}
                 />
@@ -53,14 +52,14 @@ const FacultyStats = ({
             <Col xs={24} sm={12}>
               <Card bordered={false}>
                 <PieChart
-                  isLoading={isLoading}
+                  isLoading={isLoadingStats}
                   title={{
                     text: "Contributors",
                   }}
-                  data={data?.data.map((items) => ({
+                  data={stats?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributors.replaceAll("_", " "),
+                      items.total_contributors.replaceAll("_", " ")
                     ),
                   }))}
                 />

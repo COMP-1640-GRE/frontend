@@ -4,6 +4,7 @@ import { capitalize } from "lodash";
 import { UserRole } from "../../../enums/user.enum";
 import { useIdentity } from "../../../hooks/useIdentity";
 import { PieChart } from "./PieChart";
+import { isGuestCanAccess } from "../../../utils/dashboard";
 
 interface IProps {
   roles?: UserRole[];
@@ -14,8 +15,10 @@ const SemesterStats = ({
   roles = [UserRole.ADMIN, UserRole.MANAGER, UserRole.COORDINATOR],
   query,
 }: IProps) => {
-  const { role } = useIdentity();
-  const canView = role && roles.includes(role);
+  const identity = useIdentity();
+  const canView =
+    roles.includes(identity.role) &&
+    isGuestCanAccess(identity, "/dashboard/semester-stats");
 
   const { data, isLoading } = useCustom({
     method: "get",
@@ -44,7 +47,7 @@ const SemesterStats = ({
                   data={data?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributions.replaceAll("_", " "),
+                      items.total_contributions.replaceAll("_", " ")
                     ),
                   }))}
                 />
@@ -60,7 +63,7 @@ const SemesterStats = ({
                   data={data?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributors.replaceAll("_", " "),
+                      items.total_contributors.replaceAll("_", " ")
                     ),
                   }))}
                 />

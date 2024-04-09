@@ -12,6 +12,7 @@ import { useForm } from "@refinedev/antd";
 import { Dayjs } from "dayjs";
 import { useIdentity } from "../../hooks/useIdentity";
 import { UserRole } from "../../enums/user.enum";
+import General from "./components/General";
 
 type FilterForm = { date?: Dayjs[] };
 
@@ -49,16 +50,17 @@ const Dashboard = () => {
   return (
     <>
       <Space direction="vertical">
-        <ContributionStats key={key} query={filter} />
-        <UserStats key={key} query={filter} />
+        <ContributionStats key={`ContributionStats-${key}`} query={filter} />
+        <UserStats key={`UserStats-${key}`} query={filter} />
         <Stats
           title="Notifications"
           url="/dashboard/notifications-stats"
-          key={key}
+          key={`Notifications-${key}`}
           query={filter}
         />
-        <FacultyStats key={key} query={filter} />
-        <SemesterStats key={key} query={filter} />
+        <FacultyStats key={`FacultyStats-${key}`} query={filter} />
+        <SemesterStats key={`SemesterStats-${key}`} query={filter} />
+        <General key={`General-${key}`} query={filter} />
       </Space>
       <Popover
         onOpenChange={(open) => {

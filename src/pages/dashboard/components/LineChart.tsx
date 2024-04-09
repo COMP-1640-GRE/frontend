@@ -43,17 +43,12 @@ const LineChart = ({ isLoading, ...rest }: IProps) => {
         },
         ...rest,
         series: [
-          {
-            type: "line",
-            emphasis: { focus: "series" },
-          },
           ...Array.from({
-            length: (rest.dataset?.["dimensions"]?.length || 0) - 2,
+            length: (rest.dataset?.["dimensions"]?.length || 0) - 1,
           }).map(() => ({
-            type: "bar",
-            itemStyle: {
-              color: "transparent",
-            },
+            type: "line",
+            smooth: true,
+            emphasis: { focus: "series" },
           })),
         ],
       }}

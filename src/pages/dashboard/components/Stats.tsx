@@ -1,10 +1,10 @@
 import { useCustom } from "@refinedev/core";
 import { Card, Col, Row, Statistic, Typography } from "antd";
-import { StatisticProps } from "antd/lib";
 import { capitalize } from "lodash";
-import CountUp from "react-countup";
 import { UserRole } from "../../../enums/user.enum";
 import { useIdentity } from "../../../hooks/useIdentity";
+import { formatter } from "../../../utils/statistic-formatter";
+import { isGuestCanAccess } from "../../../utils/dashboard";
 
 interface IProps {
   title: string;
@@ -13,18 +13,15 @@ interface IProps {
   query: any;
 }
 
-const formatter: StatisticProps["formatter"] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
-
 const Stats = ({
   title,
   url,
   roles = [UserRole.ADMIN, UserRole.MANAGER],
   query,
 }: IProps) => {
-  const { role } = useIdentity();
-  const canView = role && roles.includes(role);
+  const identity = useIdentity();
+  const canView =
+    roles.includes(identity.role) && isGuestCanAccess(identity, url);
 
   const { data } = useCustom({
     method: "get",

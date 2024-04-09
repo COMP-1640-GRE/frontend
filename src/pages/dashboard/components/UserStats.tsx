@@ -1,52 +1,49 @@
 import { useCustom } from "@refinedev/core";
 import { Card, Col, Row, Statistic, Typography } from "antd";
-import { StatisticProps } from "antd/lib";
 import { capitalize, pick } from "lodash";
-import CountUp from "react-countup";
 import { UserRole } from "../../../enums/user.enum";
 import { useIdentity } from "../../../hooks/useIdentity";
 import { PieChart } from "./PieChart";
-import { useState } from "react";
+import { formatter } from "../../../utils/statistic-formatter";
+import { isGuestCanAccess } from "../../../utils/dashboard";
 
 interface IProps {
   roles?: UserRole[];
   query: any;
 }
 
-const formatter: StatisticProps["formatter"] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
-
 const UserStats = ({
   roles = [UserRole.ADMIN, UserRole.MANAGER],
   query,
 }: IProps) => {
-  const { role } = useIdentity();
-  const canView = role && roles.includes(role);
-  const [key, setKey] = useState(0);
+  const identity = useIdentity();
+  const canView =
+    roles.includes(identity.role) &&
+    isGuestCanAccess(identity, "/dashboard/users-stats");
 
-  const { data, isLoading } = useCustom({
+  const { data: stats, isLoading } = useCustom({
     method: "get",
     url: "/dashboard/users-stats",
     config: { query },
-    queryOptions: { enabled: canView, onSuccess: () => setKey(key + 1) },
+    queryOptions: { enabled: canView },
   });
+
   return (
     <>
       {canView && (
         <>
           <Typography.Title level={3}>User</Typography.Title>
-          {data?.data && (
+          {stats?.data && (
             <>
               <Row gutter={[16, 16]}>
                 {Object.keys(
-                  pick(data?.data, ["total_users", "total_faculties"])
+                  pick(stats?.data, ["total_users", "total_faculties"])
                 ).map((key) => (
                   <Col key={key} span={8} xs={24} sm={12}>
                     <Card bordered={false}>
                       <Statistic
                         title={capitalize(key.replaceAll("_", " "))}
-                        value={data?.data[key]}
+                        value={stats?.data[key]}
                         formatter={formatter}
                       />
                     </Card>
@@ -60,7 +57,7 @@ const UserStats = ({
                         text: "Roles",
                       }}
                       data={Object.keys(
-                        pick(data?.data, [
+                        pick(stats?.data, [
                           "role_student",
                           "role_guest",
                           "role_administrator",
@@ -69,7 +66,7 @@ const UserStats = ({
                         ])
                       ).map((key) => ({
                         name: capitalize(key.replaceAll("_", " ")),
-                        value: data?.data[key],
+                        value: stats?.data[key],
                       }))}
                     />
                   </Card>
@@ -82,14 +79,14 @@ const UserStats = ({
                         text: "Status",
                       }}
                       data={Object.keys(
-                        pick(data?.data, [
+                        pick(stats?.data, [
                           "status_locked",
                           "status_active",
                           "status_inactive",
                         ])
                       ).map((key) => ({
                         name: capitalize(key.replaceAll("_", " ")),
-                        value: data?.data[key],
+                        value: stats?.data[key],
                       }))}
                     />
                   </Card>
