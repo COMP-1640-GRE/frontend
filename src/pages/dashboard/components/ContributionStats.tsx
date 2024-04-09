@@ -9,6 +9,7 @@ import { PieChart } from "./PieChart";
 
 interface IProps {
   roles?: UserRole[];
+  query: any;
 }
 
 const formatter: StatisticProps["formatter"] = (value) => (
@@ -17,6 +18,7 @@ const formatter: StatisticProps["formatter"] = (value) => (
 
 const ContributionStats = ({
   roles = [UserRole.ADMIN, UserRole.MANAGER],
+  query,
 }: IProps) => {
   const { role } = useIdentity();
   const canView = role && roles.includes(role);
@@ -24,6 +26,7 @@ const ContributionStats = ({
   const { data, isLoading } = useCustom({
     method: "get",
     url: "/dashboard/contribution-stats",
+    config: { query },
     queryOptions: { enabled: canView },
   });
 
@@ -43,7 +46,7 @@ const ContributionStats = ({
                 "total_contributors",
                 "total_anonymous_contributions",
                 "total_views",
-              ])
+              ]),
             ).map((key, index) => (
               <Col key={index} span={8} xs={24} sm={12} lg={6}>
                 <Card bordered={false}>
@@ -67,7 +70,7 @@ const ContributionStats = ({
                       "status_pending",
                       "status_approved",
                       "status_rejected",
-                    ])
+                    ]),
                   ).map((key) => ({
                     name: capitalize(key.replaceAll("_", " ")),
                     value: data?.data[key],
@@ -87,7 +90,7 @@ const ContributionStats = ({
                       "evaluation_good",
                       "evaluation_normal",
                       "evaluation_bad",
-                    ])
+                    ]),
                   ).map((key) => ({
                     name: capitalize(key.replaceAll("_", " ")),
                     value: data?.data[key],

@@ -103,7 +103,7 @@ export const ContributionCreate: React.FC<IResourceComponentsProps> = () => {
               validator: (_, value) => {
                 if (value) return Promise.resolve();
                 return Promise.reject(
-                  "Please agree to the terms and conditions"
+                  "Please agree to the terms and conditions",
                 );
               },
             },

@@ -9,19 +9,24 @@ import { PieChart } from "./PieChart";
 
 interface IProps {
   roles?: UserRole[];
+  query: any;
 }
 
 const formatter: StatisticProps["formatter"] = (value) => (
   <CountUp end={value as number} separator="," />
 );
 
-const UserStats = ({ roles = [UserRole.ADMIN, UserRole.MANAGER] }: IProps) => {
+const UserStats = ({
+  roles = [UserRole.ADMIN, UserRole.MANAGER],
+  query,
+}: IProps) => {
   const { role } = useIdentity();
   const canView = role && roles.includes(role);
 
   const { data, isLoading } = useCustom({
     method: "get",
     url: "/dashboard/users-stats",
+    config: { query },
     queryOptions: { enabled: canView },
   });
 
@@ -36,7 +41,7 @@ const UserStats = ({ roles = [UserRole.ADMIN, UserRole.MANAGER] }: IProps) => {
         <>
           <Row gutter={[16, 16]}>
             {Object.keys(
-              pick(data?.data, ["total_users", "total_faculties"])
+              pick(data?.data, ["total_users", "total_faculties"]),
             ).map((key, index) => (
               <Col key={index} span={8} xs={24} sm={12}>
                 <Card bordered={false}>
@@ -62,7 +67,7 @@ const UserStats = ({ roles = [UserRole.ADMIN, UserRole.MANAGER] }: IProps) => {
                       "role_administrator",
                       "role_university_marketing_manager",
                       "role_faculty_marketing_coordinator",
-                    ])
+                    ]),
                   ).map((key) => ({
                     name: capitalize(key.replaceAll("_", " ")),
                     value: data?.data[key],
@@ -82,7 +87,7 @@ const UserStats = ({ roles = [UserRole.ADMIN, UserRole.MANAGER] }: IProps) => {
                       "status_locked",
                       "status_active",
                       "status_inactive",
-                    ])
+                    ]),
                   ).map((key) => ({
                     name: capitalize(key.replaceAll("_", " ")),
                     value: data?.data[key],

@@ -7,10 +7,12 @@ import { PieChart } from "./PieChart";
 
 interface IProps {
   roles?: UserRole[];
+  query: any;
 }
 
 const FacultyStats = ({
   roles = [UserRole.ADMIN, UserRole.MANAGER, UserRole.COORDINATOR],
+  query,
 }: IProps) => {
   const { role } = useIdentity();
   const canView = role && roles.includes(role);
@@ -18,6 +20,7 @@ const FacultyStats = ({
   const { data, isLoading } = useCustom({
     method: "get",
     url: "/dashboard/faculty-stats",
+    config: { query },
     queryOptions: { enabled: canView },
   });
 
@@ -41,7 +44,7 @@ const FacultyStats = ({
                   data={data?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributions.replaceAll("_", " ")
+                      items.total_contributions.replaceAll("_", " "),
                     ),
                   }))}
                 />
@@ -57,7 +60,7 @@ const FacultyStats = ({
                   data={data?.data.map((items) => ({
                     ...items,
                     value: capitalize(
-                      items.total_contributors.replaceAll("_", " ")
+                      items.total_contributors.replaceAll("_", " "),
                     ),
                   }))}
                 />

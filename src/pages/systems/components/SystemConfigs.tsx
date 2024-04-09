@@ -42,7 +42,7 @@ const Configs = ({ rootPath, obj }: IProps) => {
     <>
       {Object.keys(obj).map((key, index) => {
         const type = typeof obj[key];
-        let item = null;
+        let item: React.ReactNode = null;
         const name = rootPath ? `${rootPath}.${key}` : key;
         switch (type) {
           case "string":

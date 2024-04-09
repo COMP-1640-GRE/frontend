@@ -186,7 +186,7 @@ export const ContributionManagementList: React.FC<
                         [new Uint8Array(res.data.zip.data)],
                         {
                           type: "application/zip",
-                        }
+                        },
                       );
 
                       const url = URL.createObjectURL(blob);
@@ -196,7 +196,7 @@ export const ContributionManagementList: React.FC<
                       a.click();
                       URL.revokeObjectURL(url);
                     },
-                  }
+                  },
                 )
               }
             >

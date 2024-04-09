@@ -10,6 +10,7 @@ interface IProps {
   title: string;
   url: string;
   roles?: UserRole[];
+  query: any;
 }
 
 const formatter: StatisticProps["formatter"] = (value) => (
@@ -20,6 +21,7 @@ const Stats = ({
   title,
   url,
   roles = [UserRole.ADMIN, UserRole.MANAGER],
+  query,
 }: IProps) => {
   const { role } = useIdentity();
   const canView = role && roles.includes(role);
@@ -27,6 +29,7 @@ const Stats = ({
   const { data } = useCustom({
     method: "get",
     url,
+    config: { query },
     queryOptions: { enabled: canView },
   });
 
