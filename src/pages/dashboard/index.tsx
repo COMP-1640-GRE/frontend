@@ -7,15 +7,25 @@ import Stats from "./components/Stats";
 import FacultyStats from "./components/FacultyStats";
 import SemesterStats from "./components/SemesterStats";
 import { Popover } from "antd/lib";
-import { ControlOutlined, SettingOutlined } from "@ant-design/icons";
+import { ControlOutlined } from "@ant-design/icons";
 import { useForm } from "@refinedev/antd";
 import { Dayjs } from "dayjs";
+import { useIdentity } from "../../hooks/useIdentity";
+import { UserRole } from "../../enums/user.enum";
 
 type FilterForm = { date?: Dayjs[] };
 
 const Dashboard = () => {
+  const { role, id, faculty } = useIdentity();
+
   const [key, setKey] = useState(0);
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({
+    faculty_id:
+      role && [UserRole.COORDINATOR, UserRole.GUEST].includes(role)
+        ? faculty?.id
+        : undefined,
+    user_id: role === UserRole.STUDENT ? id : undefined,
+  });
   const { formProps, form } = useForm<FilterForm>();
 
   useEffect(() => {
@@ -36,19 +46,20 @@ const Dashboard = () => {
     };
   }, []);
 
-  console.log(filter);
   return (
-    <Space direction="vertical">
-      <ContributionStats key={key} query={filter} />
-      <UserStats key={key} query={filter} />
-      <Stats
-        title="Notifications"
-        url="/dashboard/notifications-stats"
-        key={key}
-        query={filter}
-      />
-      <FacultyStats key={key} query={filter} />
-      <SemesterStats key={key} query={filter} />
+    <>
+      <Space direction="vertical">
+        <ContributionStats key={key} query={filter} />
+        <UserStats key={key} query={filter} />
+        <Stats
+          title="Notifications"
+          url="/dashboard/notifications-stats"
+          key={key}
+          query={filter}
+        />
+        <FacultyStats key={key} query={filter} />
+        <SemesterStats key={key} query={filter} />
+      </Space>
       <Popover
         onOpenChange={(open) => {
           if (open) return;
@@ -76,7 +87,7 @@ const Dashboard = () => {
       >
         <FloatButton icon={<ControlOutlined />} />
       </Popover>
-    </Space>
+    </>
   );
 };
 
