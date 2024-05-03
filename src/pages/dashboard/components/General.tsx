@@ -60,7 +60,11 @@ const General = ({ query }: IProps) => {
                   title={{ text: "Reactions time series" }}
                   dataset={{
                     source: reaction?.data ?? [],
-                    dimensions: ["total_reactions", "total_reactors"],
+                    dimensions: [
+                      "created_at",
+                      "total_reactions",
+                      "total_reactors",
+                    ],
                   }}
                 />
               </Card>
