@@ -19,11 +19,17 @@ const ReviewEditor = ({ contribution_id, editingRecord, onFinish }: IProps) => {
       form.resetFields();
     },
   });
+  console.log(contribution_id);
 
   return (
     <Form {...formProps} layout="vertical">
-      <Form.Item name="contribution_id" initialValue={contribution_id} hidden>
-        <Input />
+      <Form.Item
+        name="contribution_id"
+        initialValue={contribution_id}
+        hidden
+        key={contribution_id}
+      >
+        <Input value={contribution_id} />
       </Form.Item>
       <Form.Item name="content" initialValue={editingRecord?.content}>
         <Input.TextArea />
